@@ -6,10 +6,10 @@
 
 // Universal
 
-versionNum = "6.0.1"
-versionDay = 1
-versionMonth = 9
-versionYear = 2023
+versionNum = "6.1.0"
+versionDay = 5
+versionMonth = 8
+versionYear = 2025
 versionText = ""
 
 //langs=['en:United States:English','pt:Brazil:Portugues','de:Germany:Deutsche','es:Spain:Español','sk:Slovakia:Slovenský','nl:Netherlands:Nederlands','el:Greece:ελληνικά','hu:Hungary:Magyar','he:Israel:עִבְרִית‎','fr:France:français']

@@ -12,7 +12,7 @@
                 </ion-menu-toggle>
             </ion-buttons>
             <!-- </ion-buttons> -->
-            <ion-title id="title">FLL SUBMERGED Scorer</ion-title>
+            <ion-title id="title">FLL UNEARTHED Scorer</ion-title>
         </ion-toolbar>
         <!-- <ion-toolbar color=""> -->
         <!-- <ion-segment scrollable>
@@ -302,7 +302,7 @@
                                 <div id="legacy" style="max-width:100%; ">
 
                                     <ion-button type="button" id="saveText"
-                                        onclick="sharksave=0; saver();displaysaves(); drawBasic(); maximum=window.localStorage.DRSMSscorer.split( '/').length-1 ">
+                                        onclick="sharksave=0; saver();displaysaves(); drawBasic(); maximum=window.localStorage.DRUESscorer.split( '/').length-1 ">
                                         Save Score</ion-button>
 
                                     <br>
@@ -365,7 +365,7 @@
 
                                 </div>
                                 <ion-button text-wrap id="deleteText" class="ui-button ui-widget ui-corner-all" type="button"
-                                    onclick="window.localStorage.DRSMSscorer = ''; window.localStorage.DRSMS1scorer = ''; displaysaves(); drawBasic(); ionAlert(doneText)">Delete All Saves</ion-button>
+                                    onclick="window.localStorage.DRUESscorer = ''; window.localStorage.DRUES1scorer = ''; displaysaves(); drawBasic(); ionAlert(doneText)">Delete All Saves</ion-button>
 
                                 <div>
                                     <div id="containerHC"
@@ -374,18 +374,18 @@
                                     <div id="saves"></div>
 
                                     <ion-button id="importText" class="ui-mini no-mobile" onclick=" document.getElementById('fileInput').click() ;
-                               maximum = window.localStorage.DRSMSscorer.split('/').length-1;">Import Shared Scores</ion-button>
+                               maximum = window.localStorage.DRUESscorer.split('/').length-1;">Import Shared Scores</ion-button>
 
                                     <input onchange="setTimeout(function(){
              displaysaves();
              drawBasic();
-             document.getElementById('saveid').max = window.localStorage.DRSMSscorer.split('/').length-1;},300)" style=" position: fixed;
+             document.getElementById('saveid').max = window.localStorage.DRUESscorer.split('/').length-1;},300)" style=" position: fixed;
           bottom: -10000px;
-          left: -100000px;" type="file" accept=".DRSM" id="fileInput">
+          left: -100000px;" type="file" accept=".DRUE" id="fileInput">
 
 
                                     <ion-button text-wrap class="ui-mini no-mobile" id="exportText"
-                                        onclick="window.download(window.localStorage.DRSMSscorer + ';' + window.localStorage.DRSMS1scorer, day+'myscores.DRSM','application/octet-stream')">Share Saves</ion-button>
+                                        onclick="window.download(window.localStorage.DRUESscorer + ';' + window.localStorage.DRUES1scorer, day+'myscores.DRUE','application/octet-stream')">Share Saves</ion-button>
 
                                     <script type="text/javascript">
 
@@ -455,7 +455,7 @@
                                             Score</ion-button>
 
                                         <br><text>Load local score:</text> <input onchange="" type="file"
-                                            accept=".TDRSM" id="fileInputT">
+                                            accept=".TDRUE" id="fileInputT">
                                         <!-- position: fixed;
                   bottom: -10000px;
                   left: -100000px; -->

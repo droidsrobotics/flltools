@@ -236,8 +236,8 @@ transform: translate3d(0px, -24px, 0px) scale(1);
 
   <input type="hidden" id="loadedBtn">
   <script>
-    if (window.localStorage.DRSMSscorer != undefined) {
-      maximum = window.localStorage.DRSMSscorer.split('/').length - 1;
+    if (window.localStorage.DRUESscorer != undefined) {
+      maximum = window.localStorage.DRUESscorer.split('/').length - 1;
       min = 1;
       start = 1;
     } else {
@@ -425,7 +425,7 @@ transform: translate3d(0px, -24px, 0px) scale(1);
       prevY = currY;
       console.log("down")
       ctx.beginPath();
-      ctx.fillStyle = x;
+      // ctx.fillStyle = x;
       ctx.moveTo(currX, currY);
 
     }
@@ -464,12 +464,12 @@ transform: translate3d(0px, -24px, 0px) scale(1);
       // if angle
       console.log("Distance: " + distance * 10 / 10 + "in; " + distance * 2.54 * 10 / 10 + "cm; " + angle + " deg")
       // document.getElementById("distance").innerHTML = "Distance: "+Math.round(distance*10)/10+"in; "+Math.round(distance*2.54*10)/10+"cm"
-      context.font = "24px Arial";
-      context.fillStyle = "white";
+      context.font = "20px Arial";
+      // context.fillStyle = "white";
       if (drawmode == "line") {
         width = ctx.measureText(Math.round(distance * 2.54 * 10) / 10 + "cm; " + Math.round(angle) + "°").width
-        ctx.fillRect(currX, currY + 5, width, -25)
-        context.fillStyle = "blue";
+        // ctx.fillRect(currX, currY + 5, width, -25)
+        // context.fillStyle = "blue";
 
         context.fillText(Math.round(distance * 2.54 * 10) / 10 + "cm; " + Math.round(angle) + "°", currX, currY);
       }
@@ -772,8 +772,8 @@ transform: translate3d(0px, -24px, 0px) scale(1);
 
     // context = ctx;
     // drawBoard()
-    // if (window.localStorage.DRSMGoogleSheet != undefined) {
-    //     document.getElementById('sheetId').value = window.localStorage.DRSMGoogleSheet;
+    // if (window.localStorage.DRUEGoogleSheet != undefined) {
+    //     document.getElementById('sheetId').value = window.localStorage.DRUEGoogleSheet;
     //     } else {
     // 	document.getElementById('sheetId').value = undefinedText;
     //     }
@@ -1069,7 +1069,7 @@ var modalElement;
       person = role + "-" + name
       match = "team-" + teamSV
 
-      filename = match + "_" + time + "_round-" + round + "_score-" + points + "_" + person + ".TDRSM"
+      filename = match + "_" + time + "_round-" + round + "_score-" + points + "_" + person + ".TDRUE"
 
       data = team + ";" + round + ";" + score + ";" + role + ";" + name + ";" + filename
       // filename = "team-"+document.getElementById("team_num").value+"_round-"+document.getElementById("round_num").value+"_score-"+document.getElementById("allpoints").innerHTML+"_"+currentTime+".TDRRP"
@@ -1099,6 +1099,7 @@ var modalElement;
 
 
 </script>
+
 <script>
   (function (i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;

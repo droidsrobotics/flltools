@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="540.000000pt"
+   height="360.000000pt"
+   viewBox="0 0 540.000000 360.000000"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="kan_fe.svg">
+  <defs
+     id="defs14" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="718"
+     id="namedview12"
+     showgrid="false"
+     inkscape:zoom="0.51407407"
+     inkscape:cx="6.8083573"
+     inkscape:cy="225"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <metadata
+     id="metadata4">
+Created by potrace 1.11, written by Peter Selinger 2001-2013
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <path
+     style="fill:#008f00;fill-opacity:1;stroke:none"
+     inkscape:connector-curvature="0"
+     id="path8-7"
+     d="m 1,300 0,60 269,0 269,0 0,-60 0,-60 -269,0 -269,0 0,60 z" />
+  <path
+     style="fill:#ffc800;stroke:none;fill-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path8"
+     d="m 1,180 0,60 269,0 269,0 0,-60 0,-60 -269,0 -269,0 0,60 z" />
+  <path
+     style="fill:#ffc800;stroke:none;fill-opacity:1"
+     inkscape:connector-curvature="0"
+     id="path10"
+     d="m 478,261.2 c -0.6,2.4 -2.2,7.6 -3.6,11.7 -1.4,4.1 -2.8,8.5 -3,9.8 -0.2,1.2 -0.9,3.4 -1.4,4.8 l -1,2.5 -17.1,0 -17.1,0 4.9,3.9 c 2.7,2.1 8.8,6.6 13.6,10 4.7,3.4 8.8,6.5 9.1,6.9 0.6,1.1 -1.5,9.1 -4.3,16 -1.1,2.8 -1.9,5.2 -1.6,5.2 0.3,0 -0.6,2.9 -1.9,6.5 -1.3,3.5 -1.8,6.1 -1.2,5.7 1.7,-1 20.5,-14.8 23.9,-17.4 l 2.7,-2.2 2.8,2.2 c 3.3,2.6 22.1,16.4 23.8,17.4 0.6,0.4 0.1,-2.2 -1.2,-5.7 -1.3,-3.6 -2.2,-6.5 -1.9,-6.5 0.3,0 -0.5,-2.4 -1.6,-5.2 -2.8,-6.9 -4.9,-14.9 -4.3,-16 0.3,-0.4 4.4,-3.5 9.1,-6.9 4.8,-3.4 10.9,-7.9 13.6,-10 l 4.9,-3.9 -17.1,0 -17.1,0 -1,-2.5 c -0.5,-1.4 -1.2,-3.7 -1.4,-5 -0.3,-1.4 -1.6,-5.7 -3,-9.7 -1.4,-4 -3,-9.2 -3.6,-11.6 -0.6,-2.3 -1.5,-4.2 -2,-4.2 -0.5,0 -1.4,1.9 -2,4.2 z" />
+  <path
+     style="fill:#0000ff;fill-opacity:1;stroke:none"
+     inkscape:connector-curvature="0"
+     id="path8-1"
+     d="m 1,60 0,60 269,0 269,0 0,-60 L 539,0 270,0 1,0 1,60 z" />
+</svg>

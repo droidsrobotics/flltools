@@ -19,8 +19,8 @@ store = []
 score = ""
 datetime = ""
 
-if (window.localStorage.DRSMS1scorer == undefined) {
-  window.localStorage.DRSMS1scorer = ''
+if (window.localStorage.DRUES1scorer == undefined) {
+  window.localStorage.DRUES1scorer = ''
 }
 
 // Function to get status check of all missions and store in var store (also returned)
@@ -89,7 +89,7 @@ function loadsave(save) {
 
 // Load a localStorage getvar() var store save by id
 function loader(save) {
-  data = window.localStorage.DRSMSscorer.split('/')[save];
+  data = window.localStorage.DRUESscorer.split('/')[save];
   loadsave(String(data));
   loadsave(String(data));
   ionAlert(loadedText);
@@ -102,11 +102,11 @@ function drawBasic() {
 
   nn = 1;
   array = [];
-  array[0] = parseInt(window.localStorage.DRSMS1scorer.split(' Points')[0].split(',')[0]);
+  array[0] = parseInt(window.localStorage.DRUES1scorer.split(' Points')[0].split(',')[0]);
   vvv = 1;
-  lt = window.localStorage.DRSMS1scorer.split(',').length - 0;
+  lt = window.localStorage.DRUES1scorer.split(',').length - 0;
   while (vvv < lt) {
-    array[nn] = parseInt(window.localStorage.DRSMS1scorer.split(' Points')[vvv].split(',')[1]);
+    array[nn] = parseInt(window.localStorage.DRUES1scorer.split(' Points')[vvv].split(',')[1]);
     vvv = vvv + 1;
     nn = nn + 1;
   }
@@ -161,12 +161,12 @@ function drawBasic() {
 // Display saveDateTimeScore() data under graph
 function displaysaves() {
   n = 0;
-  a = window.localStorage.DRSMS1scorer.split(',').length;
+  a = window.localStorage.DRUES1scorer.split(',').length;
   document.getElementById('saves').innerHTML = "";
-  if (window.localStorage.DRSMS1scorer != undefined && window.localStorage.DRSMS1scorer != "") {
+  if (window.localStorage.DRUES1scorer != undefined && window.localStorage.DRUES1scorer != "") {
     while (n < a) {
       //alert(n)
-      document.getElementById('saves').innerHTML = document.getElementById('saves').innerHTML + ' ' + saveText + ' ' + String(n + 1) + ': ' + window.localStorage.DRSMS1scorer.split(',')[n].split('Points')[0] + pointsText + window.localStorage.DRSMS1scorer.split(',')[n].split('Points')[1] + '<br>';
+      document.getElementById('saves').innerHTML = document.getElementById('saves').innerHTML + ' ' + saveText + ' ' + String(n + 1) + ': ' + window.localStorage.DRUES1scorer.split(',')[n].split('Points')[0] + pointsText + window.localStorage.DRUES1scorer.split(',')[n].split('Points')[1] + '<br>';
       n = n + 1;
     }
   }
@@ -222,13 +222,13 @@ if (hours > 12) {
 function saver() {
   // Save all missions
   store = getvar();
-  window.localStorage.DRSMSscorer = window.localStorage.DRSMSscorer + '/' + store
+  window.localStorage.DRUESscorer = window.localStorage.DRUESscorer + '/' + store
   // Save time stamp and score
   saveDateTimeScore()
-  if (window.localStorage.DRSMS1scorer != undefined && window.localStorage.DRSMS1scorer != '') {
-    window.localStorage.DRSMS1scorer = String(window.localStorage.DRSMS1scorer) + ',' + String(score) + ' Points - ' + datetime;
+  if (window.localStorage.DRUES1scorer != undefined && window.localStorage.DRUES1scorer != '') {
+    window.localStorage.DRUES1scorer = String(window.localStorage.DRUES1scorer) + ',' + String(score) + ' Points - ' + datetime;
   } else {
-    window.localStorage.DRSMS1scorer = score + ' Points - ' + datetime;
+    window.localStorage.DRUES1scorer = score + ' Points - ' + datetime;
   }
 
   ionAlert(savedText);

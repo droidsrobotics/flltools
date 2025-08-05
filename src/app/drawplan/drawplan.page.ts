@@ -16,7 +16,16 @@ export class DrawplanPage implements OnInit {
     if (document.getElementById("loadedDP").value != "done") {
       //document.getElementById("loadedDP").value = "done"
 
-    document.getElementById("mat").src = matimage;
+    // document.getElementById("mat").src = matimage;
+    const img = document.getElementById('srcmat');
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth; // Or img.width if you're sure it's loaded
+    canvas.height = img.naturalHeight; // Or img.height
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const dataURL = canvas.toDataURL('image/png'); // Default is 'image/png'
+    document.getElementById("mat").src = dataURL
+
     var width = window.innerWidth-20
     //height = String((width*530/944)-100)
     //height = String((width*530/944))
@@ -90,6 +99,10 @@ export class DrawplanPage implements OnInit {
     var y = 2;
     var drawmode = 'pencil';
 
+    $('#wPaint').wPaint('setFillStyle','yellow');
+
+    var context = canvas.getContext("2d");
+    context.fillStyle = "yellow"
     
 
     var imageLoader = document.getElementById('imageLoader');

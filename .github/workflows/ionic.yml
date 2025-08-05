@@ -51,6 +51,7 @@ jobs:
           ionic build 
           cp www/index.html www/404.html
           cp -r translator www/
+          cp -r utils www/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

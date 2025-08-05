@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLL Rubric File Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS for syntax highlighting (Okaidia theme for dark background) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+        .section-header {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            text-align: center;
+            color: #1d4ed8; /* text-blue-700 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .sub-header {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #2563eb; /* text-blue-600 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .input-label {
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: #374151; /* text-gray-700 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .text-input, .select-input, .textarea-input {
+            margin-top: 0.25rem; /* mt-1 */
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            font-size: 0.875rem; /* sm:text-sm */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .text-input:focus, .select-input:focus, .textarea-input:focus {
+            outline: none;
+            border-color: #3b82f6; /* focus:border-blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* focus:ring-blue-500 */
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            font-weight: 600; /* font-semibold */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #2563eb; /* bg-blue-600 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+        }
+        .btn-success {
+            background-color: #10b981; /* bg-green-600 */
+            color: #ffffff;
+        }
+        .btn-success:hover {
+            background-color: #059669; /* hover:bg-green-700 */
+        }
+        .btn-danger {
+            background-color: #ef4444; /* bg-red-600 */
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* hover:bg-red-700 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* bg-gray-600 */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* hover:bg-gray-700 */
+        }
+        .btn-indigo {
+            background-color: #4f46e5; /* bg-indigo-600 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+        }
+        .btn-indigo:hover {
+            background-color: #4338ca; /* hover:bg-indigo-700 */
+        }
+        .rubric-block-card {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .code-block {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            position: relative;
+        }
+        .code-block pre[class*="language-"] {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .code-block code[class*="language-"] {
+            font-size: 0.875rem;
+            color: #ffffff;
+        }
+        .message-box {
+            background-color: #dbeafe;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Table-like display for rubric blocks */
+        .rubric-table-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Flexible columns */
+            gap: 0.5rem; /* Gap between grid items */
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            background-color: #ffffff;
+            margin-bottom: 1rem;
+            align-items: start; /* Align items to the top of their cells */
+        }
+
+        .rubric-table-section > div {
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            background-color: #f9fafb;
+            border: 1px solid #f3f4f6;
+        }
+
+        .rubric-table-section.header-section {
+            grid-template-columns: 1fr; /* Header takes full width */
+        }
+        .rubric-table-section.levels-section {
+            grid-template-columns: repeat(5, 1fr); /* 5 columns for levels */
+        }
+        .rubric-table-section.subsection-group-section {
+            grid-template-columns: 1fr; /* Subsection group as a whole block */
+        }
+        .rubric-table-section.comments-section {
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for comments */
+        }
+        .rubric-table-section.total-points-section {
+            grid-template-columns: 1fr; /* Total points takes full width */
+        }
+
+        /* Specific styling for options rows within subsection group */
+        .options-row-display {
+            display: grid;
+            grid-template-columns: 1fr repeat(4, auto); /* Description + 4 options */
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: #eff6ff; /* Light blue for options rows */
+            border-radius: 0.375rem;
+            border: 1px solid #bfdbfe;
+            margin-top: 0.5rem;
+        }
+        .options-row-display.pink-bg {
+            background-color: #fbcfe8; /* Pink for specific rows */
+            border-color: #f9a8d4;
+        }
+        .options-row-display > div {
+            padding: 0.3rem;
+            background-color: #ffffff;
+            border-radius: 0.25rem;
+            border: 1px solid #e5e7eb;
+            font-size: 0.8rem;
+        }
+        .options-row-display .option-id-input {
+            width: 50px; /* Smaller width for ID input */
+        }
+        .options-row-display .option-type-select {
+            width: 80px; /* Smaller width for type select */
+        }
+        .options-row-display .free-option-name {
+            width: 100px; /* Smaller width for free option name */
+        }
+        .html-preview {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #f0f4f8;
+            min-height: 50px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 text-gray-800">
+    <div id="loading-spinner" class="loading-overlay hidden">
+        <div class="text-lg font-semibold text-gray-700">Loading...</div>
+    </div>
+
+    <div class="container">
+        <h1 class="section-header">FLL Rubric File Generator</h1>
+
+        <div id="message-container" class="message-box hidden">
+            <span id="message-text"></span>
+        </div>
+
+        <div class="mb-6 border-b pb-4">
+            <label for="seasonName" class="input-label text-lg">Season Name (for function name and title):</label>
+            <input
+                type="text"
+                id="seasonName"
+                class="text-input"
+                placeholder="e.g., 2020RP (for load2020RP())"
+            />
+        </div>
+
+        <div class="mb-6 border-b pb-4 flex space-x-4">
+            <div class="flex-1">
+                <label for="fileInput" class="input-label text-lg">Load from JS File:</label>
+                <input type="file" id="fileInput" accept=".js" class="mt-1 block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"/>
+            </div>
+            <button id="startBlankBtn" class="btn btn-secondary py-2 px-4 self-end">
+                Start Blank
+            </button>
+        </div>
+
+        <h2 class="sub-header">Rubric Content Blocks</h2>
+        <div id="rubricBlocksContainer" class="space-y-6 mb-8">
+            <!-- Rubric content blocks will be dynamically added here -->
+        </div>
+
+        <button id="addRubricBlockBtn" class="btn btn-indigo w-full py-3 mb-8">
+            Add New Rubric Block
+        </button>
+
+        <h2 class="sub-header">Generated JavaScript Code</h2>
+        <div class="code-block">
+            <pre><code id="generatedCodeDisplay" class="language-javascript">// Generate code by adding rubric blocks and a season name.</code></pre>
+            <button id="copyCodeBtn" class="btn btn-secondary absolute top-2 right-2 text-xs">
+                Copy Code
+            </button>
+        </div>
+    </div>
+
+    <!-- Prism.js JS for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script type="module">
+        // Helper function to generate option name based on subsection title, global identifier, and row index
+        function generateOptionName(subSectionTitle, globalIdentifier, rowIndex) {
+            const cleanTitlePart = subSectionTitle ? subSectionTitle.replace(/[^a-zA-Z0-9]/g, '') : '';
+            const globalIdPart = globalIdentifier ? globalIdentifier.replace(/[^a-zA-Z0-9]/g, '') : '';
+            const rowNumPart = (rowIndex + 1).toString();
+            return `${cleanTitlePart}${globalIdPart}${rowNumPart}`;
+        }
+
+        // Application State
+        let appState = {
+            seasonName: '2020RP', // Default for project.js example
+            globalIdentifier: 'IP', // Default, will be updated based on first header
+            rubricBlocks: [
+                { id: 'block-1', type: 'header', h1: 'Innovation Project', p: "Instructions: Teams should communicate to the judges their achievement in each of the criteria below. This rubric should be filled out during the Innovation Project presentation.<br><br><b>Judges are required to tick one box on a separate line to indicate the level the team has achieved. If the team exceeds, please make a short comment in the Exceeds box.</b></p>" },
+                { id: 'block-2', type: 'levels', colors: ['#E9EBF8', '#BCC7E7', '#8AA4D5', '#5484C4'], labels: ["Beginning","Developing","Accomplished","Exceeds","How has the team exceeded?"] },
+                {
+                    id: 'block-3', type: 'subsectionGroup',
+                    subSection: { title: 'Identify', description: 'Team had a clearly defined problem that was well researched.', color: '#D2DAF1' },
+                    optionsRows: [
+                        {
+                            id: 'row-1', bgcolor: 'none',
+                            options: [
+                                { id: 'opt-1', name: generateOptionName('Identify', 'IP', 0), value: 'Unclear definition of the problem', score: '1', type: 'option' },
+                                { id: 'opt-2', name: generateOptionName('Identify', 'IP', 0), value: 'Partially clear definition of the problem', score: '2', type: 'option' },
+                                { id: 'opt-3', name: generateOptionName('Identify', 'IP', 0), value: 'Clear definition of the problem', score: '3', type: 'option' },
+                                { id: 'opt-4', name: generateOptionName('Identify', 'IP', 0), type: 'freeOption', value: '4' } // Value for freeOption is its ID
+                            ]
+                        },
+                        {
+                            id: 'row-2', bgcolor: 'pink',
+                            options: [
+                                { id: 'opt-5', name: generateOptionName('Identify', 'IP', 1), value: 'Minimal evidence of research', score: '1', type: 'option' },
+                                { id: 'opt-6', name: generateOptionName('Identify', 'IP', 1), value: 'Partial evidence of research from one or more sources', score: '2', type: 'option' },
+                                { id: 'opt-7', name: generateOptionName('Identify', 'IP', 1), value: 'Clear, detailed research from a variety of sources', score: '3', type: 'option' },
+                                { id: 'opt-8', name: generateOptionName('Identify', 'IP', 1), type: 'freeOption', value: '4' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'block-4', type: 'subsectionGroup',
+                    subSection: { title: 'Design', description: 'Team worked together while creating a project plan and developing their ideas.', color: '#D2DAF1' },
+                    optionsRows: [
+                        {
+                            id: 'row-3', bgcolor: 'none',
+                            options: [
+                                { id: 'opt-9', name: generateOptionName('Design', 'IP', 0), value: 'Minimal evidence of an effective project plan', score: '1', type: 'option' },
+                                { id: 'opt-10', name: generateOptionName('Design', 'IP', 0), value: 'Partial evidence of an effective project plan', score: '2', type: 'option' },
+                                { id: 'opt-11', name: generateOptionName('Design', 'IP', 0), value: 'Clear evidence of an effective project plan', score: '3', type: 'option' },
+                                { id: 'opt-12', name: generateOptionName('Design', 'IP', 0), type: 'freeOption', value: '4' }
+                            ]
+                        },
+                        {
+                            id: 'row-4', bgcolor: 'pink',
+                            options: [
+                                { id: 'opt-13', name: generateOptionName('Design', 'IP', 1), value: 'Minimal evidence that development process involved all team members', score: '1', type: 'option' },
+                                { id: 'opt-14', name: generateOptionName('Design', 'IP', 1), value: 'Partial evidence that development process involved all team member', score: '2', type: 'option' },
+                                { id: 'opt-15', name: generateOptionName('Design', 'IP', 1), value: 'Clear evidence that development process involved all team members', score: '3', type: 'option' },
+                                { id: 'opt-16', name: generateOptionName('Design', 'IP', 1), type: 'freeOption', value: '4' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'block-5', type: 'subsectionGroup',
+                    subSection: { title: 'Create', description: 'Team developed an original idea or built on an existing one with a prototype model/drawing to represent their solution.', color: '#D2DAF1' },
+                    optionsRows: [
+                        {
+                            id: 'row-5', bgcolor: 'pink',
+                            options: [
+                                { id: 'opt-17', name: generateOptionName('Create', 'IP', 0), value: 'Minimal explanation of innovative solution', score: '1', type: 'option' },
+                                { id: 'opt-18', name: generateOptionName('Create', 'IP', 0), value: 'Simple explanation of innovative solution', score: '2', type: 'option' },
+                                { id: 'opt-19', name: generateOptionName('Create', 'IP', 0), value: 'Detailed explanation of innovative solution', score: '3', type: 'option' },
+                                { id: 'opt-20', name: generateOptionName('Create', 'IP', 0), type: 'freeOption', value: '4' }
+                            ]
+                        },
+                        {
+                            id: 'row-6', bgcolor: 'none',
+                            options: [
+                                { id: 'opt-21', name: generateOptionName('Create', 'IP', 1), value: 'Unclear model/drawing that represents the solution', score: '1', type: 'option' },
+                                { id: 'opt-22', name: generateOptionName('Create', 'IP', 1), value: 'Simple model/drawing that represents the solution', score: '2', type: 'option' },
+                                { id: 'opt-23', name: generateOptionName('Create', 'IP', 1), value: 'Detailed model/drawing that represents the the solution', score: '3', type: 'option' },
+                                { id: 'opt-24', name: generateOptionName('Create', 'IP', 1), type: 'freeOption', value: '4' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'block-6', type: 'subsectionGroup',
+                    subSection: { title: 'Iterate', description: 'Teams shared their ideas, collected feedback, and included improvements in their solution.', color: '#D2DAF1' },
+                    optionsRows: [
+                        {
+                            id: 'row-7', bgcolor: 'none',
+                            options: [
+                                { id: 'opt-25', name: generateOptionName('Iterate', 'IP', 0), value: 'Minimal sharing of their solution', score: '1', type: 'option' },
+                                { id: 'opt-26', name: generateOptionName('Iterate', 'IP', 0), value: 'Solution shared with at least one person/group', score: '2', type: 'option' },
+                                { id: 'opt-27', name: generateOptionName('Iterate', 'IP', 0), value: 'Solution shared with multiple people/groups', score: '3', type: 'option' },
+                                { id: 'opt-28', name: generateOptionName('Iterate', 'IP', 0), type: 'freeOption', value: '4' }
+                            ]
+                        },
+                        {
+                            id: 'row-8', bgcolor: 'none',
+                            options: [
+                                { id: 'opt-29', name: generateOptionName('Iterate', 'IP', 1), value: 'Minimal evidence of improvements based on feedback', score: '1', type: 'option' },
+                                { id: 'opt-30', name: generateOptionName('Iterate', 'IP', 1), value: 'Partial evidence of improvements based on feedback', score: '2', type: 'option' },
+                                { id: 'opt-31', name: generateOptionName('Iterate', 'IP', 1), value: 'Clear evidence of improvements based on feedback', score: '3', type: 'option' },
+                                { id: 'opt-32', name: generateOptionName('Iterate', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                        }
+                    ]
+                },
+                {
+                    id: 'block-7', type: 'subsectionGroup',
+                    subSection: { title: 'Communicate', description: 'Team shared an effective presentation of their solution, its impact on their users, and celebrated their team\'s progress.', color: '#D2DAF1' },
+                    optionsRows: [
+                        {
+                            id: 'row-9', bgcolor: 'pink',
+                            options: [
+                                { id: 'opt-33', name: generateOptionName('Communicate', 'IP', 0), value: 'Unclear explanation of the solution and its potential impact on others', score: '1', type: 'option' },
+                                { id: 'opt-34', name: generateOptionName('Communicate', 'IP', 0), value: 'Partially clear explanation of solution and its potential impact on others', score: '2', type: 'option' },
+                                { id: 'opt-35', name: generateOptionName('Communicate', 'IP', 0), value: 'Clear explanation of solution and its potential impact on others', score: '3', type: 'option' },
+                                { id: 'opt-36', name: generateOptionName('Communicate', 'IP', 0), type: 'freeOption', value: '4' }
+                            ]
+                        },
+                        {
+                            id: 'row-10', bgcolor: 'pink',
+                            options: [
+                                { id: 'opt-37', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation shows minimal pride or enthusiasm for their work', score: '1', type: 'option' },
+                                { id: 'opt-38', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation shows partial pride or enthusiasm for their work', score: '2', type: 'option' },
+                                { id: 'opt-39', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation clearly shows pride or enthusiasm for their work', score: '3', type: 'option' },
+                                { id: 'opt-40', name: generateOptionName('Communicate', 'IP', 1), type: 'freeOption', value: '4' }
+                            ]
+                        }
+                    ]
+                },
+                { id: 'block-8', type: 'paragraph', text: "<p style='background-color:pink'>Criteria on this page with this style of check box count dually toward Innovation Project and Core Values awards rankings</p>" },
+                { id: 'block-9', type: 'comments', name: 'innovationProject', title: 'Innovation Project -- How did the team identify and approach solving a problem connected to the season theme', item1: 'Great Job', item2: 'Think About' }
+            ],
+            generatedCode: '',
+            loading: false,
+            message: '',
+        };
+
+        // DOM Elements
+        const seasonNameInput = document.getElementById('seasonName');
+        const rubricBlocksContainer = document.getElementById('rubricBlocksContainer');
+        const addRubricBlockBtn = document.getElementById('addRubricBlockBtn');
+        const generatedCodeDisplay = document.getElementById('generatedCodeDisplay');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const messageContainer = document.getElementById('message-container');
+        const messageText = document.getElementById('message-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const fileInput = document.getElementById('fileInput');
+        const startBlankBtn = document.getElementById('startBlankBtn');
+
+
+        // --- Utility Functions ---
+
+        function showLoading() {
+            loadingSpinner.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingSpinner.classList.add('hidden');
+        }
+
+        function showMessage(msg, type = 'info') {
+            messageText.textContent = msg;
+            messageContainer.classList.remove('hidden', 'bg-blue-100', 'border-blue-400', 'text-blue-700', 'bg-red-100', 'border-red-400', 'text-red-700', 'bg-green-100', 'border-green-400', 'text-green-700');
+            if (type === 'info') {
+                messageContainer.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+            } else if (type === 'error') {
+                messageContainer.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            } else if (type === 'success') {
+                messageContainer.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+            }
+            setTimeout(() => {
+                messageContainer.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Helper to set nested property safely
+        function setNestedProperty(obj, path, value) {
+            const pList = path.split('.');
+            const len = pList.length;
+            let current = obj;
+
+            for (let i = 0; i < len - 1; i++) {
+                const elem = pList[i];
+                if (current === undefined || current === null || typeof current !== 'object') {
+                    console.error("setNestedProperty: Invalid intermediate object at path part:", elem, "for full path:", path);
+                    return;
+                }
+
+                if (!current.hasOwnProperty(elem) || typeof current[elem] !== 'object' || current[elem] === null) {
+                    current[elem] = isNaN(parseInt(pList[i + 1])) ? {} : [];
+                }
+                current = current[elem];
+            }
+            if (current && typeof current === 'object') {
+                current[pList[len - 1]] = value;
+            } else {
+                console.error("setNestedProperty: Cannot set property on non-object at end of path:", path, "Current:", current);
+            }
+        }
+
+        function generateUniqueId(prefix = '') {
+            return prefix + Math.random().toString(36).substring(2, 9);
+        }
+
+        // Update the globalIdentifier based on the first header's h1
+        function updateGlobalIdentifier() {
+            const firstHeader = appState.rubricBlocks.find(block => block.type === 'header');
+            if (firstHeader && firstHeader.h1) {
+                appState.globalIdentifier = firstHeader.h1.split(' ').map(word => word[0]).join('').toUpperCase();
+                if (appState.globalIdentifier === '') appState.globalIdentifier = "RB"; // Fallback
+            } else {
+                appState.globalIdentifier = "RB"; // Default if no header or empty h1
+            }
+        }
+
+        // --- Code Generation ---
+
+        function generateJsCode() {
+            const seasonFuncName = appState.seasonName.replace(/[^a-zA-Z0-9]/g, '');
+            let identifierValue = "RB"; // This will be the 'identifier' var in the generated JS
+
+            const firstHeader = appState.rubricBlocks.find(block => block.type === 'header');
+            if (firstHeader && firstHeader.h1) {
+                identifierValue = firstHeader.h1.split(' ').map(word => word[0]).join('').toUpperCase();
+                if (identifierValue === '') identifierValue = "RB";
+            }
+
+            let code = `// This is where all the missions are defined for the season. Ideally, each season, you only have to edit this file, but there are some small areas that need to be changed elsewhere.
+// This uses html.js to draw all the missions to the screen.
+// Mission loader v2.0 Dynamic Content Replacer
+
+// Defines a blank save for reset
+
+var identifier = "${identifierValue}"
+function load${seasonFuncName}() {
+    identifier = "${identifierValue}"
+
+    // Override function in scoring system during the checking for button conflicts
+
+
+    clearbuffer()
+
+    // Draw the layout
+`;
+            appState.rubricBlocks.forEach(block => {
+                if (block.type === 'header') {
+                    code += `    addToBuffer("<h1>${block.h1}</h1>")\n`;
+                    code += `    addToBuffer("<p class='no-print'>${block.p.replace(/"/g, '\\"')}</p>")\n`;
+                    code += `    startRubric()\n\n`;
+                } else if (block.type === 'levels') {
+                    const colorsArgs = block.colors.map(c => `'${c}'`).join(',');
+                    const labelsArgs = block.labels.map(l => `'${l.replace(/"/g, '\\"')}'`).join(',');
+                    code += `    startRow()\n`;
+                    code += `    addLevels(${colorsArgs},${labelsArgs})\n`;
+                    code += `    closeRow()\n\n`;
+                } else if (block.type === 'subsectionGroup') {
+                    const fullDescription = `${block.subSection.title || ''}${block.subSection.title && block.subSection.description ? ' - ' : ''}${block.subSection.description || ''}`;
+                    // addSubSection is no longer wrapped in startRow()/closeRow()
+                    code += `    addSubSection("${fullDescription.replace(/"/g, '\\"')}","${block.subSection.color}",[])\n\n`;
+                    block.optionsRows.forEach(row => {
+                        code += `    startRow(bgcolor="${row.bgcolor}")\n`;
+                        row.options.forEach(option => {
+                            if (option.type === 'option') {
+                                // Use option.score for the third parameter (the ID)
+                                code += `    addOption("${option.name}","${option.value.replace(/"/g, '\\"')}","${option.score || ''}")\n`;
+                            } else if (option.type === 'freeOption') {
+                                code += `    addFreeOption("${option.name}","${option.value}")\n`; // Free option uses 'value' for its ID in the generated code
+                            }
+                        });
+                        code += `    closeRow()\n\n`;
+                    });
+                } else if (block.type === 'paragraph') {
+                    code += `    addToBuffer("${block.text.replace(/"/g, '\\"')}")\n\n`;
+                } else if (block.type === 'comments') {
+                    code += `    addComments("${block.name}","${block.title.replace(/"/g, '\\"')}","${block.item1.replace(/"/g, '\\"')}","${block.item2.replace(/"/g, '\\"')}")\n\n`;
+                }
+            });
+
+            code += `
+    endRubric()\n\n`;
+
+            code += `    addToBuffer("Total Points:<text> </text><b style='color:red;' id='ippts'></b>")\n\n`;
+
+            code += `
+    writebuffer("projectlist")
+}
+
+// The DOMContentLoaded event listener is removed as requested.
+// The load function will need to be called explicitly or by another script.
+load${seasonFuncName}();
+`;
+
+            appState.generatedCode = code;
+            generatedCodeDisplay.textContent = appState.generatedCode;
+            Prism.highlightAll();
+        }
+
+        // --- DOM Rendering / Update Functions ---
+
+        // Renders or updates a single rubric block card
+        function renderOrUpdateRubricBlockCard(block, blockIndex) {
+            let blockCard = document.querySelector(`.rubric-block-card[data-block-id="${block.id}"]`);
+
+            if (!blockCard) {
+                // Create new block card if it doesn't exist
+                blockCard = document.createElement('div');
+                blockCard.className = 'rubric-block-card mb-4';
+                blockCard.dataset.blockId = block.id;
+                blockCard.dataset.blockIndex = blockIndex; // Keep index for ordering/deletion
+
+                // Append to container (will be reordered later if necessary)
+                rubricBlocksContainer.appendChild(blockCard);
+            }
+
+            // Always update inner HTML for the block type and controls
+            let innerHtml = `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-medium text-gray-800">Block ${blockIndex + 1} (${block.type.replace(/([A-Z])/g, ' $1').trim()})</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-2 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-150 ease-in-out" data-action="move-up-block" data-block-id="${block.id}" ${blockIndex === 0 ? 'disabled' : ''}>
+                            &#9650;
+                        </button>
+                        <button class="px-2 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-150 ease-in-out" data-action="move-down-block" data-block-id="${block.id}" ${blockIndex === appState.rubricBlocks.length - 1 ? 'disabled' : ''}>
+                            &#9660;
+                        </button>
+                        <button class="btn btn-danger text-sm" data-action="delete-block" data-block-id="${block.id}">
+                            Delete Block
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="input-label text-xs">Block Type:</label>
+                    <select class="select-input text-sm" data-block-field="type" data-block-id="${block.id}">
+                        <option value="header" ${block.type === 'header' ? 'selected' : ''}>Header (H1 & Paragraph)</option>
+                        <option value="levels" ${block.type === 'levels' ? 'selected' : ''}>Levels (Beginning, Developing...)</option>
+                        <option value="subsectionGroup" ${block.type === 'subsectionGroup' ? 'selected' : ''}>Subsection Group (Subsection + Options)</option>
+                        <option value="paragraph" ${block.type === 'paragraph' ? 'selected' : ''}>Paragraph (HTML content)</option>
+                        <option value="comments" ${block.type === 'comments' ? 'selected' : ''}>Comments Section</option>
+                    </select>
+                </div>
+            `;
+
+            let contentHtml = ''; // Content specific to block type
+            if (block.type === 'header') {
+                contentHtml = `
+                    <div class="rubric-table-section header-section">
+                        <div>
+                            <label class="input-label text-xs">Header (H1) Text:</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="h1" value="${block.h1 || ''}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Paragraph Text (HTML content):</label>
+                            <textarea class="textarea-input text-sm" data-block-id="${block.id}" data-block-field="p" rows="4" placeholder="Supports HTML">${block.p || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            } else if (block.type === 'levels') {
+                contentHtml = `
+                    <div class="rubric-table-section levels-section">
+                        ${block.colors.map((color, i) => `
+                            <div>
+                                <label class="input-label text-xs">Color ${i + 1}:</label>
+                                <input type="color" class="w-full h-8 border border-gray-300 rounded-md" data-block-id="${block.id}" data-block-field="colors.${i}" value="${color || '#ffffff'}">
+                                <label class="input-label text-xs mt-2">Label ${i + 1}:</label>
+                                <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="labels.${i}" value="${block.labels[i] || ''}">
+                            </div>
+                        `).join('')}
+                        <div class="col-span-full">
+                            <label class="input-label text-xs">Label 5 (Exceeds Comment):</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="labels.4" value="${block.labels[4] || ''}">
+                        </div>
+                    </div>
+                `;
+            } else if (block.type === 'subsectionGroup') {
+                contentHtml = `
+                    <div class="rubric-table-section subsection-group-section">
+                        <h4 class="text-md font-semibold text-gray-700 mb-2 col-span-full">Subsection Details:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 col-span-full">
+                            <div>
+                                <label class="input-label text-xs">Title:</label>
+                                <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-subsection-field="title" value="${block.subSection.title || ''}" placeholder="e.g., Identify">
+                            </div>
+                            <div>
+                                <label class="input-label text-xs">Description (HTML content):</label>
+                                <textarea class="textarea-input text-sm" data-block-id="${block.id}" data-subsection-field="description" rows="2" placeholder="e.g., Team had a clearly defined problem...">${block.subSection.description || ''}</textarea>
+                            </div>
+                            <div>
+                                <label class="input-label text-xs">Background Color:</label>
+                                <input type="color" class="w-full h-8 border border-gray-300 rounded-md" data-block-id="${block.id}" data-subsection-field="color" value="${block.subSection.color || '#ffffff'}">
+                            </div>
+                            <!-- Children IDs input removed -->
+                        </div>
+                        <h4 class="text-md font-semibold text-gray-700 mb-2 col-span-full">Options Rows:</h4>
+                        <div id="optionsRowsContainer-${block.id}" class="col-span-full space-y-3">
+                            </div>
+                        <button class="btn btn-primary mt-4 text-sm col-span-full" data-action="add-options-row" data-block-id="${block.id}">
+                            Add Options Row
+                        </button>
+                    </div>
+                `;
+            } else if (block.type === 'paragraph') {
+                contentHtml = `
+                    <div class="rubric-table-section">
+                        <div>
+                            <label class="input-label text-xs">Paragraph Content (HTML content):</label>
+                            <textarea class="textarea-input text-sm" data-block-id="${block.id}" data-block-field="text" rows="4" placeholder="Supports HTML">${block.text || ''}</textarea>
+                            <div class="html-preview mt-2">
+                                <p class="input-label text-xs mb-1">HTML Preview:</p>
+                                <div id="paragraph-preview-${block.id}" class="border p-2 rounded bg-white"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (block.type === 'comments') {
+                contentHtml = `
+                    <div class="rubric-table-section comments-section">
+                        <div>
+                            <label class="input-label text-xs">Name (for ID):</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="name" value="${block.name || ''}" placeholder="e.g., innovationProject">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Title:</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="title" value="${block.title || ''}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Item 1 Label:</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="item1" value="${block.item1 || ''}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Item 2 Label:</label>
+                            <input type="text" class="text-input text-sm" data-block-id="${block.id}" data-block-field="item2" value="${block.item2 || ''}">
+                        </div>
+                    </div>
+                `;
+            }
+
+            // A temporary div to parse the contentHtml and append its children
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = innerHtml + contentHtml;
+
+            // Clear existing content and append new content
+            blockCard.innerHTML = '';
+            while (tempDiv.firstChild) {
+                blockCard.appendChild(tempDiv.firstChild);
+            }
+
+            // Update data-block-index in case of reordering
+            blockCard.dataset.blockIndex = blockIndex;
+
+            // If it's a subsectionGroup, manage its options rows
+            if (block.type === 'subsectionGroup') {
+                renderOrUpdateOptionsRows(block.id, block.optionsRows, block.subSection.title, appState.globalIdentifier);
+            } else if (block.type === 'paragraph') {
+                // Initialize the HTML preview for paragraph blocks
+                const previewDiv = document.getElementById(`paragraph-preview-${block.id}`);
+                if (previewDiv) {
+                    previewDiv.innerHTML = block.text || '';
+                }
+            }
+        }
+
+        // Renders or updates options rows within a subsection group
+        function renderOrUpdateOptionsRows(blockId, optionsRows, subSectionTitle, globalIdentifier) {
+            const optionsRowsContainer = document.getElementById(`optionsRowsContainer-${blockId}`);
+            if (!optionsRowsContainer) return;
+
+            // Remove old rows
+            Array.from(optionsRowsContainer.children).forEach(existingRowEl => {
+                const rowId = existingRowEl.dataset.rowId;
+                if (!optionsRows.some(row => row.id === rowId)) {
+                    existingRowEl.remove();
+                }
+            });
+
+            optionsRows.forEach((row, rowIndex) => {
+                let rowCard = optionsRowsContainer.querySelector(`.options-row-display[data-row-id="${row.id}"]`);
+
+                if (!rowCard) {
+                    // Create new row card if it doesn't exist
+                    rowCard = document.createElement('div');
+                    rowCard.className = `options-row-display ${row.bgcolor === 'pink' ? 'pink-bg' : ''}`;
+                    rowCard.dataset.rowId = row.id;
+                    rowCard.dataset.rowIndex = rowIndex; // Keep index for ordering/deletion
+                    rowCard.dataset.blockId = blockId; // Link to parent block
+
+                    // Append to container (will be reordered later if necessary)
+                    optionsRowsContainer.appendChild(rowCard);
+                } else {
+                    // Update class if background color changes
+                    rowCard.className = `options-row-display ${row.bgcolor === 'pink' ? 'pink-bg' : ''}`;
+                }
+
+                let rowHtml = `
+                    <div class="col-span-full flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Options Row ${rowIndex + 1}</span>
+                        <div class="flex space-x-2 ml-auto">
+                            <label class="input-label text-xs">BG Color:</label>
+                            <input type="color" class="w-10 h-6 border border-gray-300 rounded-md" data-block-id="${blockId}" data-row-id="${row.id}" data-options-row-field="bgcolor" value="${row.bgcolor || '#ffffff'}">
+                            <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500" data-action="delete-options-row" data-block-id="${blockId}" data-row-id="${row.id}">
+                                Delete Row
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-span-full grid grid-cols-5 gap-2" id="optionsContainer-${row.id}"> <!-- Grid for options -->
+                    </div>
+                    <div class="col-span-full">
+                        <button class="btn btn-primary mt-3 text-xs" data-action="add-option" data-block-id="${blockId}" data-row-id="${row.id}">
+                            Add Option
+                        </button>
+                    </div>
+                `;
+                // A temporary div to parse the rowHtml and append its children
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rowHtml;
+
+                // Clear existing content and append new content for the row
+                rowCard.innerHTML = '';
+                while (tempDiv.firstChild) {
+                    rowCard.appendChild(tempDiv.firstChild);
+                }
+
+                // Update data-row-index in case of reordering
+                rowCard.dataset.rowIndex = rowIndex;
+
+                // Now manage the options within this row
+                renderOrUpdateOptions(blockId, row.id, row.options, subSectionTitle, rowIndex, globalIdentifier);
+            });
+
+            // Reorder existing rows to match appState order
+            const currentChildren = Array.from(optionsRowsContainer.children);
+            optionsRows.forEach((row, index) => {
+                const element = optionsRowsContainer.querySelector(`[data-row-id="${row.id}"]`);
+                if (element && element !== currentChildren[index]) {
+                    optionsRowsContainer.insertBefore(element, currentChildren[index]);
+                }
+            });
+        }
+
+        // Renders or updates individual options within an options row
+        function renderOrUpdateOptions(blockId, rowId, options, subSectionTitle, rowIndex, globalIdentifier) {
+            const optionsContainer = document.getElementById(`optionsContainer-${rowId}`);
+            if (!optionsContainer) return;
+
+            // Remove old options
+            Array.from(optionsContainer.children).forEach(existingOptionEl => {
+                const optionId = existingOptionEl.dataset.optionId;
+                if (!options.some(option => option.id === optionId)) {
+                    existingOptionEl.remove();
+                }
+            });
+
+            options.forEach((option, optionIndex) => {
+                let optionCard = optionsContainer.querySelector(`div[data-option-id="${option.id}"]`);
+
+                if (!optionCard) {
+                    // Create new option card if it doesn't exist
+                    optionCard = document.createElement('div');
+                    optionCard.className = 'flex flex-col p-2 border border-gray-200 rounded-md bg-white shadow-sm';
+                    optionCard.dataset.optionId = option.id;
+                    optionCard.dataset.optionIndex = optionIndex; // Keep index for ordering/deletion
+                    optionCard.dataset.rowId = rowId; // Link to parent row
+                    optionCard.dataset.blockId = blockId; // Link to parent block
+
+                    // Append to container (will be reordered later if necessary)
+                    optionsContainer.appendChild(optionCard);
+                }
+
+                // Ensure the 'name' is correctly generated for display
+                const displayOptionName = generateOptionName(subSectionTitle, globalIdentifier, rowIndex);
+
+                let optionHtml = `
+                    <div class="flex items-center mb-1">
+                        <select class="select-input text-xs option-type-select" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}" data-option-field="type">
+                            <option value="option" ${option.type === 'option' ? 'selected' : ''}>Standard</option>
+                            <option value="freeOption" ${option.type === 'freeOption' ? 'selected' : ''}>Free Text</option>
+                        </select>
+                        <button class="ml-auto px-1 py-0.5 bg-red-300 text-white text-xs rounded-md hover:bg-red-400" data-action="delete-option" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}">
+                            &times;
+                        </button>
+                    </div>
+                    <label class="input-label text-xs mt-1">Name (Group ID):</label>
+                    <input type="text" class="text-input text-xs" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}" data-option-field="name" value="${displayOptionName || ''}" placeholder="e.g., IdentifyIP1" readonly>
+                    ${option.type === 'option' ? `
+                        <label class="input-label text-xs mt-1">Description:</label>
+                        <textarea class="textarea-input text-xs flex-1" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}" data-option-field="value" rows="2" placeholder="Option description (HTML allowed)">${option.value || ''}</textarea>
+                        <label class="input-label text-xs mt-1">ID:</label>
+                        <input type="text" class="text-input text-xs option-id-input" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}" data-option-field="score" value="${option.score || ''}" placeholder="e.g., 1, 2, 3" readonly>
+                    ` : `
+                        <label class="input-label text-xs mt-1">Free Option ID:</label>
+                        <input type="text" class="text-input text-xs option-id-input" data-block-id="${blockId}" data-row-id="${rowId}" data-option-id="${option.id}" data-option-field="value" value="${option.value || ''}" placeholder="e.g., 4" readonly>
+                    `}
+                `;
+                // Note: For freeOption, the 'value' field in appState stores the ID for generation,
+                // so the input for ID uses data-option-field="value" for freeOption type.
+
+                // A temporary div to parse the optionHtml and append its children
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = optionHtml;
+
+                // Clear existing content and append new content for the option
+                optionCard.innerHTML = '';
+                while (tempDiv.firstChild) {
+                    optionCard.appendChild(tempDiv.firstChild);
+                }
+
+                // Update data-option-index in case of reordering
+                optionCard.dataset.optionIndex = optionIndex;
+            });
+
+            // Reorder existing options to match appState order
+            const currentChildren = Array.from(optionsContainer.children);
+            options.forEach((option, index) => {
+                const element = optionsContainer.querySelector(`[data-option-id="${option.id}"]`);
+                if (element && element !== currentChildren[index]) {
+                    optionsContainer.insertBefore(element, currentChildren[index]);
+                }
+            });
+        }
+
+
+        // Main render function for the entire UI
+        function renderUI() {
+            seasonNameInput.value = appState.seasonName;
+            updateGlobalIdentifier(); // Ensure globalIdentifier is updated before rendering
+
+            // Clear all existing blocks from the DOM
+            while (rubricBlocksContainer.firstChild) {
+                rubricBlocksContainer.removeChild(rubricBlocksContainer.firstChild);
+            }
+
+            // Render all blocks from appState in their current order
+            appState.rubricBlocks.forEach((block, index) => {
+                renderOrUpdateRubricBlockCard(block, index);
+            });
+
+            generateJsCode(); // Regenerate code after any state change
+        }
+
+        // --- Event Listeners and Handlers ---
+
+        seasonNameInput.addEventListener('input', (e) => {
+            appState.seasonName = e.target.value;
+            updateGlobalIdentifier(); // Update identifier when season name changes
+            generateJsCode(); // Only regenerate code, no UI re-render
+        });
+
+        startBlankBtn.addEventListener('click', () => {
+            appState.seasonName = 'NewSeason';
+            appState.rubricBlocks = [];
+            updateGlobalIdentifier(); // Update identifier for blank slate
+            renderUI(); // Full re-render for blank slate
+            showMessage('Started with a blank rubric!', 'info');
+        });
+
+        addRubricBlockBtn.addEventListener('click', () => {
+            appState.rubricBlocks.push({ id: generateUniqueId('block-'), type: 'paragraph', text: '' });
+            renderUI(); // Full re-render to add new block
+        });
+
+        rubricBlocksContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            const action = target.dataset.action;
+
+            const blockId = target.closest('[data-block-id]')?.dataset.blockId;
+            const rowId = target.closest('[data-row-id]')?.dataset.rowId;
+            const optionId = target.closest('[data-option-id]')?.dataset.optionId;
+
+            const blockIndex = appState.rubricBlocks.findIndex(b => b.id === blockId);
+            const block = appState.rubricBlocks[blockIndex];
+
+            if (blockIndex === -1) {
+                console.warn("Click event on element with invalid blockId. Skipping action.", target);
+                return;
+            }
+
+            if (action === 'delete-block') {
+                appState.rubricBlocks.splice(blockIndex, 1);
+                renderUI();
+            } else if (action === 'move-up-block') {
+                if (blockIndex > 0) {
+                    [appState.rubricBlocks[blockIndex - 1], appState.rubricBlocks[blockIndex]] = [appState.rubricBlocks[blockIndex], appState.rubricBlocks[blockIndex - 1]];
+                    renderUI();
+                }
+            } else if (action === 'move-down-block') {
+                if (blockIndex < appState.rubricBlocks.length - 1) {
+                    [appState.rubricBlocks[blockIndex + 1], appState.rubricBlocks[blockIndex]] = [appState.rubricBlocks[blockIndex], appState.rubricBlocks[blockIndex + 1]];
+                    renderUI();
+                }
+            } else if (action === 'add-options-row') {
+                if (!block.optionsRows) {
+                    block.optionsRows = [];
+                }
+                const newRowIndex = block.optionsRows.length;
+                const generatedName = generateOptionName(block.subSection.title, appState.globalIdentifier, newRowIndex);
+
+                // When adding a new options row, the first option should have score '1'
+                block.optionsRows.push({
+                    id: generateUniqueId('row-'),
+                    bgcolor: 'none',
+                    options: [{ id: generateUniqueId('opt-'), name: generatedName, value: '', score: '1', type: 'option' }]
+                });
+                renderUI();
+            } else if (action === 'delete-options-row') {
+                const rowIndex = block.optionsRows.findIndex(r => r.id === rowId);
+                if (rowIndex !== -1) {
+                    block.optionsRows.splice(rowIndex, 1);
+                    renderUI();
+                }
+            } else if (action === 'add-option') {
+                const rowIndex = block.optionsRows.findIndex(r => r.id === rowId);
+                if (rowIndex !== -1) {
+                    const currentOptions = block.optionsRows[rowIndex].options;
+                    const generatedName = generateOptionName(block.subSection.title, appState.globalIdentifier, rowIndex);
+
+                    // Calculate the next sequential ID for standard options
+                    let nextScoreId = 1;
+                    const existingScores = currentOptions
+                        .filter(opt => opt.type === 'option' && opt.score)
+                        .map(opt => parseInt(opt.score))
+                        .filter(score => !isNaN(score));
+
+                    if (existingScores.length > 0) {
+                        nextScoreId = Math.max(...existingScores) + 1;
+                    }
+
+                    block.optionsRows[rowIndex].options.push({
+                        id: generateUniqueId('opt-'), // Internal UI ID
+                        name: generatedName, // Group ID (e.g., 'IdentifyIP1')
+                        value: '', // Description for standard option, empty initially
+                        score: nextScoreId.toString(), // Auto-generated ID for standard option
+                        type: 'option'
+                    });
+                    renderUI();
+                }
+            } else if (action === 'delete-option') {
+                const rowIndex = block.optionsRows.findIndex(r => r.id === rowId);
+                if (rowIndex !== -1) {
+                    const optionIndex = block.optionsRows[rowIndex].options.findIndex(o => o.id === optionId);
+                    if (optionIndex !== -1) {
+                        block.optionsRows[rowIndex].options.splice(optionIndex, 1);
+                        renderUI();
+                    }
+                }
+            }
+        });
+
+        rubricBlocksContainer.addEventListener('input', (e) => {
+            const target = e.target;
+
+            const blockId = target.closest('[data-block-id]')?.dataset.blockId;
+            const rowId = target.closest('[data-row-id]')?.dataset.rowId;
+            const optionId = target.closest('[data-option-id]')?.dataset.optionId;
+
+            const blockIndex = appState.rubricBlocks.findIndex(b => b.id === blockId);
+            const block = appState.rubricBlocks[blockIndex];
+
+            if (blockIndex === -1) {
+                console.warn("Input event on element with invalid blockId. Skipping update.", target);
+                return;
+            }
+
+            if (target.dataset.blockField) {
+                const fieldPath = target.dataset.blockField;
+                if (fieldPath === 'type') {
+                    // Type change requires re-rendering the specific block
+                    const newType = target.value;
+                    let newBlock = { id: block.id }; // Preserve ID
+                    if (newType === 'header') newBlock = { ...newBlock, type: 'header', h1: '', p: '' };
+                    else if (newType === 'levels') newBlock = { ...newBlock, type: 'levels', colors: ['#E9EBF8','#BCC7E7','#8AA4D5','#5484C4'], labels: ['Beginning','Developing','Accomplished','Exceeds','How has the team exceeded?'] };
+                    else if (newType === 'subsectionGroup') {
+                        const initialTitle = '';
+                        const initialRowIndex = 0;
+                        const initialGeneratedName = generateOptionName(initialTitle, appState.globalIdentifier, initialRowIndex);
+                        newBlock = {
+                            ...newBlock,
+                            type: 'subsectionGroup',
+                            subSection: { title: initialTitle, description: '', color: '#D2DAF1' },
+                            optionsRows: [{ id: generateUniqueId('row-'), bgcolor: 'none', options: [{ id: generateUniqueId('opt-'), name: initialGeneratedName, value: '', score: '1', type: 'option' }] }]
+                        };
+                    }
+                    else if (newType === 'paragraph') newBlock = { ...newBlock, type: 'paragraph', text: '' };
+                    else if (newType === 'comments') newBlock = { ...newBlock, type: 'comments', name: '', title: '', item1: '', item2: '' };
+                    appState.rubricBlocks[blockIndex] = newBlock;
+                    renderUI(); // Re-render the specific block
+                } else {
+                    setNestedProperty(appState.rubricBlocks[blockIndex], fieldPath, target.value);
+                    if (block.type === 'paragraph' && fieldPath === 'text') {
+                        const previewDiv = document.getElementById(`paragraph-preview-${block.id}`);
+                        if (previewDiv) {
+                            previewDiv.innerHTML = target.value;
+                        }
+                    }
+                    generateJsCode(); // Only regenerate code
+                }
+            } else if (target.dataset.subsectionField) {
+                const field = target.dataset.subsectionField;
+                if (field === 'title') { // Special handling for title to update option names
+                    block.subSection.title = target.value;
+                    // If title changes, names of existing options need to be regenerated
+                    block.optionsRows.forEach((row, rowIndex) => {
+                        const newGeneratedName = generateOptionName(block.subSection.title, appState.globalIdentifier, rowIndex);
+                        row.options.forEach(option => {
+                            option.name = newGeneratedName; // Update name for all options in this row
+                        });
+                    });
+                    // Re-render only the options rows for this block to update the displayed names without full UI refresh
+                    renderOrUpdateOptionsRows(block.id, block.optionsRows, block.subSection.title, appState.globalIdentifier);
+                    generateJsCode(); // Regenerate code
+                } else if (field === 'description' || field === 'color') {
+                    block.subSection[field] = target.value;
+                    generateJsCode(); // Only regenerate code
+                }
+            } else if (target.dataset.optionsRowField) {
+                const rowIndex = block.optionsRows.findIndex(r => r.id === rowId);
+                if (rowIndex !== -1) {
+                    block.optionsRows[rowIndex][target.dataset.optionsRowField] = target.value;
+                    generateJsCode(); // Only regenerate code
+                }
+            } else if (target.dataset.optionField) {
+                const rowIndex = block.optionsRows.findIndex(r => r.id === rowId);
+                if (rowIndex !== -1) {
+                    const optionIndex = block.optionsRows[rowIndex].options.findIndex(o => o.id === optionId);
+                    if (optionIndex !== -1) {
+                        let option = block.optionsRows[rowIndex].options[optionIndex];
+                        const field = target.dataset.optionField;
+
+                        if (field === 'type') {
+                            const newType = target.value;
+                            const generatedName = generateOptionName(block.subSection.title, appState.globalIdentifier, rowIndex);
+                            let existingId = option.id;
+
+                            if (newType === 'option') {
+                                // When changing type to 'option', auto-assign next ID
+                                let nextScoreId = 1;
+                                const currentOptions = block.optionsRows[rowIndex].options;
+                                const existingScores = currentOptions
+                                    .filter(opt => opt.type === 'option' && opt.score)
+                                    .map(opt => parseInt(opt.score))
+                                    .filter(score => !isNaN(score));
+                                if (existingScores.length > 0) {
+                                    nextScoreId = Math.max(...existingScores) + 1;
+                                }
+
+                                option = {
+                                    id: existingId,
+                                    name: generatedName,
+                                    value: '', // Description is empty initially
+                                    score: nextScoreId.toString(), // Auto-generated ID
+                                    type: 'option'
+                                };
+                            } else if (newType === 'freeOption') {
+                                option = {
+                                    id: existingId,
+                                    name: generatedName,
+                                    value: '4', // Default ID for free option
+                                    type: 'freeOption'
+                                };
+                            }
+                            block.optionsRows[rowIndex].options[optionIndex] = option;
+                            renderUI(); // Re-render the specific option to change input fields
+                        } else {
+                            // Only allow editing for description (value) for standard options
+                            if (option.type === 'option' && field === 'value') {
+                                option[field] = target.value;
+                            }
+                            generateJsCode(); // Only regenerate code
+                        }
+                    }
+                }
+            }
+        });
+
+        copyCodeBtn.addEventListener('click', () => {
+            const textarea = document.createElement('textarea');
+            textarea.value = generatedCodeDisplay.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showMessage('Code copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showMessage('Failed to copy code.', 'error');
+            }
+            document.body.removeChild(textarea);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    parseJsFileContent(event.target.result);
+                };
+                reader.onerror = (error) => {
+                    console.error("Error reading file:", error);
+                    showMessage("Error parsing JS file. Please try again.", 'error');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // --- File Parsing Logic ---
+
+        function parseJsFileContent(fileContent) {
+            showLoading();
+            let newRubricBlocks = [];
+            let newSeasonName = '';
+            let currentSubsectionGroup = null;
+            let currentOptionsRow = null;
+
+            // Helper to flush current subsection group if active
+            function flushCurrentSubsectionGroup() {
+                if (currentSubsectionGroup) {
+                    newRubricBlocks.push(currentSubsectionGroup);
+                    currentSubsectionGroup = null;
+                }
+            }
+
+            try {
+                const loadFuncMatch = fileContent.match(/function load([a-zA-Z0-9]+)\(\) {/);
+                if (loadFuncMatch && loadFuncMatch[1]) {
+                    newSeasonName = loadFuncMatch[1];
+                }
+
+                const lines = fileContent.split('\n').map(line => line.trim());
+
+                lines.forEach(line => {
+                    let match;
+                    if ((match = line.match(/addToBuffer\("<h1>(.*?)<\/h1>"\)/))) {
+                        flushCurrentSubsectionGroup(); // Flush any pending subsection group
+                        const h1 = match[1];
+                        const pMatch = lines[lines.indexOf(line) + 1]?.match(/addToBuffer\("<p class='no-print'>(.*?)<\/p>"\)/);
+                        const p = pMatch ? pMatch[1].replace(/\\"/g, '"') : '';
+                        newRubricBlocks.push({ id: generateUniqueId('block-'), type: 'header', h1: h1, p: p.replace(/<br>/g, '\n') });
+                    } else if ((match = line.match(/addLevels\((.*?)\)/))) {
+                        flushCurrentSubsectionGroup(); // Flush any pending subsection group
+                        const argsString = match[1];
+                        const parts = argsString.match(/'[^']+'|"[^"]+"/g) || [];
+                        const cleanedParts = parts.map(s => s.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"'));
+
+                        const colors = cleanedParts.slice(0, 4);
+                        const labels = cleanedParts.slice(4);
+                        newRubricBlocks.push({ id: generateUniqueId('block-'), type: 'levels', colors: colors, labels: labels });
+                    } else if ((match = line.match(/addSubSection\("(.*?)","(.*?)",\[(.*?)\]\)/))) {
+                        flushCurrentSubsectionGroup(); // Flush any *previous* subsection group before starting a new one
+                        const fullDescription = match[1].replace(/\\"/g, '"');
+                        let title = '';
+                        let description = '';
+                        const separatorIndex = fullDescription.indexOf(' - ');
+                        if (separatorIndex !== -1) {
+                            title = fullDescription.substring(0, separatorIndex).trim();
+                            description = fullDescription.substring(separatorIndex + 3).trim();
+                        } else {
+                            title = fullDescription;
+                        }
+                        currentSubsectionGroup = {
+                            id: generateUniqueId('block-'), type: 'subsectionGroup',
+                            subSection: { title: title, description: description, color: match[2] },
+                            optionsRows: []
+                        };
+                    } else if ((match = line.match(/startRow\((?:bgcolor="([^"]*)")?\)/))) {
+                        // Ensure we are within a subsectionGroup before starting a row
+                        if (!currentSubsectionGroup) {
+                            console.warn("startRow() found outside a subsectionGroup. Skipping.");
+                            return;
+                        }
+                        if (currentOptionsRow) {
+                            // This means a nested startRow, which isn't supported by the current structure
+                            console.warn("Nested startRow() detected. Flushing previous row.");
+                            currentSubsectionGroup.optionsRows.push(currentOptionsRow);
+                        }
+                        currentOptionsRow = { id: generateUniqueId('row-'), bgcolor: match[1] || 'none', options: [] };
+                    } else if (line === 'closeRow()') {
+                        if (currentSubsectionGroup && currentOptionsRow) {
+                            currentSubsectionGroup.optionsRows.push(currentOptionsRow);
+                        }
+                        currentOptionsRow = null;
+                    } else if ((match = line.match(/addOption\("(.*?)","(.*?)","(.*?)"\)/)) && currentOptionsRow) {
+                        const optionName = match[1];
+                        const optionValue = match[2].replace(/\\"/g, '"');
+                        const optionScore = match[3];
+                        currentOptionsRow.options.push({
+                            id: generateUniqueId('opt-'), name: optionName, value: optionValue, score: optionScore, type: 'option'
+                        });
+                    } else if ((match = line.match(/addFreeOption\("(.*?)","(.*?)"\)/)) && currentOptionsRow) {
+                        const optionName = match[1];
+                        const optionValue = match[2];
+                        currentOptionsRow.options.push({
+                            id: generateUniqueId('opt-'), name: optionName, value: optionValue, type: 'freeOption'
+                        });
+                    } else if ((match = line.match(/addToBuffer\("(<p style='background-color:pink'>.*?)<\/p>"\)/))) {
+                        flushCurrentSubsectionGroup(); // Flush any pending subsection group
+                        newRubricBlocks.push({ id: generateUniqueId('block-'), type: 'paragraph', text: match[1].replace(/\\"/g, '"') + '</p>' });
+                    } else if ((match = line.match(/addComments\("(.*?)","(.*?)","(.*?)","(.*?)"\)/))) {
+                        flushCurrentSubsectionGroup(); // Flush any pending subsection group
+                        newRubricBlocks.push({ id: generateUniqueId('block-'), type: 'comments', name: match[1], title: match[2].replace(/\\"/g, '"'), item1: match[3].replace(/\\"/g, '"'), item2: match[4].replace(/\\"/g, '"') });
+                    }
+                });
+
+                flushCurrentSubsectionGroup(); // Final flush after loop
+
+                appState.seasonName = newSeasonName;
+                appState.rubricBlocks = newRubricBlocks;
+                updateGlobalIdentifier(); // Update identifier after rubricBlocks are updated
+                showMessage(`Successfully loaded rubric configuration from file!`, 'success');
+
+            } catch (error) {
+                console.error("Error parsing JS file:", error);
+                showMessage("Error parsing JS file. Ensure it's in the correct format.", 'error');
+                // Fallback to initial state on error
+                appState.seasonName = '2020RP';
+                appState.rubricBlocks = [
+                    { id: 'block-1', type: 'header', h1: 'Innovation Project', p: "Instructions: Teams should communicate to the judges their achievement in each of the criteria below. This rubric should be filled out during the Innovation Project presentation.<br><br><b>Judges are required to tick one box on a separate line to indicate the level the team has achieved. If the team exceeds, please make a short comment in the Exceeds box.</b></p>" },
+                    { id: 'block-2', type: 'levels', colors: ['#E9EBF8', '#BCC7E7', '#8AA4D5', '#5484C4'], labels: ["Beginning","Developing","Accomplished","Exceeds","How has the team exceeded?"] },
+                    {
+                        id: 'block-3', type: 'subsectionGroup',
+                        subSection: { title: 'Identify', description: 'Team had a clearly defined problem that was well researched.', color: '#D2DAF1' },
+                        optionsRows: [
+                            {
+                                id: 'row-1', bgcolor: 'none',
+                                options: [
+                                    { id: 'opt-1', name: generateOptionName('Identify', 'IP', 0), value: 'Unclear definition of the problem', score: '1', type: 'option' },
+                                    { id: 'opt-2', name: generateOptionName('Identify', 'IP', 0), value: 'Partially clear definition of the problem', score: '2', type: 'option' },
+                                    { id: 'opt-3', name: generateOptionName('Identify', 'IP', 0), value: 'Clear definition of the problem', score: '3', type: 'option' },
+                                    { id: 'opt-4', name: generateOptionName('Identify', 'IP', 0), type: 'freeOption', value: '4' }
+                                ]
+                            },
+                            {
+                                id: 'row-2', bgcolor: 'pink',
+                                options: [
+                                    { id: 'opt-5', name: generateOptionName('Identify', 'IP', 1), value: 'Minimal evidence of research', score: '1', type: 'option' },
+                                    { id: 'opt-6', name: generateOptionName('Identify', 'IP', 1), value: 'Partial evidence of research from one or more sources', score: '2', type: 'option' },
+                                    { id: 'opt-7', name: generateOptionName('Identify', 'IP', 1), value: 'Clear, detailed research from a variety of sources', score: '3', type: 'option' },
+                                    { id: 'opt-8', name: generateOptionName('Identify', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'block-4', type: 'subsectionGroup',
+                        subSection: { title: 'Design', description: 'Team worked together while creating a project plan and developing their ideas.', color: '#D2DAF1' },
+                        optionsRows: [
+                            {
+                                id: 'row-3', bgcolor: 'none',
+                                options: [
+                                    { id: 'opt-9', name: generateOptionName('Design', 'IP', 0), value: 'Minimal evidence of an effective project plan', score: '1', type: 'option' },
+                                    { id: 'opt-10', name: generateOptionName('Design', 'IP', 0), value: 'Partial evidence of an effective project plan', score: '2', type: 'option' },
+                                    { id: 'opt-11', name: generateOptionName('Design', 'IP', 0), value: 'Clear evidence of an effective project plan', score: '3', type: 'option' },
+                                    { id: 'opt-12', name: generateOptionName('Design', 'IP', 0), type: 'freeOption', value: '4' }
+                                ]
+                            },
+                            {
+                                id: 'row-4', bgcolor: 'pink',
+                                options: [
+                                    { id: 'opt-13', name: generateOptionName('Design', 'IP', 1), value: 'Minimal evidence that development process involved all team members', score: '1', type: 'option' },
+                                    { id: 'opt-14', name: generateOptionName('Design', 'IP', 1), value: 'Partial evidence that development process involved all team member', score: '2', type: 'option' },
+                                    { id: 'opt-15', name: generateOptionName('Design', 'IP', 1), value: 'Clear evidence that development process involved all team members', score: '3', type: 'option' },
+                                    { id: 'opt-16', name: generateOptionName('Design', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'block-5', type: 'subsectionGroup',
+                        subSection: { title: 'Create', description: 'Team developed an original idea or built on an existing one with a prototype model/drawing to represent their solution.', color: '#D2DAF1' },
+                        optionsRows: [
+                            {
+                                id: 'row-5', bgcolor: 'pink',
+                                options: [
+                                    { id: 'opt-17', name: generateOptionName('Create', 'IP', 0), value: 'Minimal explanation of innovative solution', score: '1', type: 'option' },
+                                    { id: 'opt-18', name: generateOptionName('Create', 'IP', 0), value: 'Simple explanation of innovative solution', score: '2', type: 'option' },
+                                    { id: 'opt-19', name: generateOptionName('Create', 'IP', 0), value: 'Detailed explanation of innovative solution', score: '3', type: 'option' },
+                                    { id: 'opt-20', name: generateOptionName('Create', 'IP', 0), type: 'freeOption', value: '4' }
+                                ]
+                            },
+                            {
+                                id: 'row-6', bgcolor: 'none',
+                                options: [
+                                    { id: 'opt-21', name: generateOptionName('Create', 'IP', 1), value: 'Unclear model/drawing that represents the solution', score: '1', type: 'option' },
+                                    { id: 'opt-22', name: generateOptionName('Create', 'IP', 1), value: 'Simple model/drawing that represents the solution', score: '2', type: 'option' },
+                                    { id: 'opt-23', name: generateOptionName('Create', 'IP', 1), value: 'Detailed model/drawing that represents the the solution', score: '3', type: 'option' },
+                                    { id: 'opt-24', name: generateOptionName('Create', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'block-6', type: 'subsectionGroup',
+                        subSection: { title: 'Iterate', description: 'Teams shared their ideas, collected feedback, and included improvements in their solution.', color: '#D2DAF1' },
+                        optionsRows: [
+                            {
+                                id: 'row-7', bgcolor: 'none',
+                                options: [
+                                    { id: 'opt-25', name: generateOptionName('Iterate', 'IP', 0), value: 'Minimal sharing of their solution', score: '1', type: 'option' },
+                                    { id: 'opt-26', name: generateOptionName('Iterate', 'IP', 0), value: 'Solution shared with at least one person/group', score: '2', type: 'option' },
+                                    { id: 'opt-27', name: generateOptionName('Iterate', 'IP', 0), value: 'Solution shared with multiple people/groups', score: '3', type: 'option' },
+                                    { id: 'opt-28', name: generateOptionName('Iterate', 'IP', 0), type: 'freeOption', value: '4' }
+                                ]
+                            },
+                            {
+                                id: 'row-8', bgcolor: 'none',
+                                options: [
+                                    { id: 'opt-29', name: generateOptionName('Iterate', 'IP', 1), value: 'Minimal evidence of improvements based on feedback', score: '1', type: 'option' },
+                                    { id: 'opt-30', name: generateOptionName('Iterate', 'IP', 1), value: 'Partial evidence of improvements based on feedback', score: '2', type: 'option' },
+                                    { id: 'opt-31', name: generateOptionName('Iterate', 'IP', 1), value: 'Clear evidence of improvements based on feedback', score: '3', type: 'option' },
+                                    { id: 'opt-32', name: generateOptionName('Iterate', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'block-7', type: 'subsectionGroup',
+                        subSection: { title: 'Communicate', description: 'Team shared an effective presentation of their solution, its impact on their users, and celebrated their team\'s progress.', color: '#D2DAF1' },
+                        optionsRows: [
+                            {
+                                id: 'row-9', bgcolor: 'pink',
+                                options: [
+                                    { id: 'opt-33', name: generateOptionName('Communicate', 'IP', 0), value: 'Unclear explanation of the solution and its potential impact on others', score: '1', type: 'option' },
+                                    { id: 'opt-34', name: generateOptionName('Communicate', 'IP', 0), value: 'Partially clear explanation of solution and its potential impact on others', score: '2', type: 'option' },
+                                    { id: 'opt-35', name: generateOptionName('Communicate', 'IP', 0), value: 'Clear explanation of solution and its potential impact on others', score: '3', type: 'option' },
+                                    { id: 'opt-36', name: generateOptionName('Communicate', 'IP', 0), type: 'freeOption', value: '4' }
+                                ]
+                            },
+                            {
+                                id: 'row-10', bgcolor: 'pink',
+                                options: [
+                                    { id: 'opt-37', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation shows minimal pride or enthusiasm for their work', score: '1', type: 'option' },
+                                    { id: 'opt-38', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation shows partial pride or enthusiasm for their work', score: '2', type: 'option' },
+                                    { id: 'opt-39', name: generateOptionName('Communicate', 'IP', 1), value: 'Presentation clearly shows pride or enthusiasm for their work', score: '3', type: 'option' },
+                                    { id: 'opt-40', name: generateOptionName('Communicate', 'IP', 1), type: 'freeOption', value: '4' }
+                                ]
+                            }
+                        ]
+                    },
+                    { id: 'block-8', type: 'paragraph', text: "<p style='background-color:pink'>Criteria on this page with this style of check box count dually toward Innovation Project and Core Values awards rankings</p>" },
+                    { id: 'block-9', type: 'comments', name: 'innovationProject', title: 'Innovation Project -- How did the team identify and approach solving a problem connected to the season theme', item1: 'Great Job', item2: 'Think About' }
+                ];
+            } finally {
+                hideLoading();
+                renderUI();
+            }
+        }
+
+        // Initialize on window load
+        window.onload = function() {
+            // Always start blank on site load
+            startBlankBtn.click();
+        };
+    </script>
+</body>
+</html>
+

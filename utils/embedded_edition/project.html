@@ -1,0 +1,1266 @@
+
+<script>
+    function download(data, filename, type) {
+        var file = new Blob([data], {
+            type: type
+        });
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+</script>
+
+
+<script>
+    function tournamentload() {
+        round = getParameterByName('round');
+        team = getParameterByName('team');
+        tourn = getParameterByName('tourn');
+        filename = team + '-' + round + '.txt'
+        // loadRBsave("<?php echo file_get_contents("../teams/" .$_GET["team"]. "/robotScores/rb-rp.txt"); ?>")
+        try {
+            // loadRBsave("<?php echo file_get_contents("../teams/" .$_GET["team"]. "/robotScores/rb-rp.txt"); ?>")
+        } catch (err) {
+            console.log("failed to load; file does not exist")
+        }
+
+    }
+</script>
+<!-- <div style='max-width:500px'>
+<input onclick="window.location.href = 'loadrb.php';" type="button" value="Return to Rubrics Manager">
+</div> -->
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>FLL Rubrics</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+
+
+    <script>
+        $(document).bind('mobileinit', function() {
+            $.mobile.changePage.defaults.changeHash = false;
+            $.mobile.hashListeningEnabled = false;
+            $.mobile.pushStateEnabled = false;
+        });
+
+        language = "en"
+    </script>
+    <!-- <script src="assets/js/highcharts.js"></script>
+  <script src="assets/js/exporting.js"></script> -->
+    <!-- <script src="assets/js/scorer.js"></script> -->
+    <script src="assets/js/timers.js"></script>
+    <script src="assets/js/rubricSaver.js"></script>
+    <script src="assets/js/html_new.js"></script>
+    <!-- <script src="assets/js/jquery.mobile-1.4.5.min.js"></script> -->
+
+    <!-- <script type="text/javascript" src="assets/js/jqm-spinbox.min.js"></script> -->
+
+
+
+    <script src="assets/js/download.js"></script>
+
+    <!-- <link rel="stylesheet" href="assets/css/colors.css" /> -->
+
+
+
+    <!-- <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css"> -->
+    <!--    <link rel="stylesheet" href="assets/css/tournament.css"> -->
+    <!-- <link rel="stylesheet" href="assets/css/jquery.mobile.icons.min.css" /> -->
+    <!-- <link rel="stylesheet" href="assets/css/scorer.min.css" /> -->
+
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+<link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+<script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+
+    <style>
+        .no-mobile {
+            display: inline;
+        }
+
+        .only-mobile {
+            /* display: none; */
+        }
+
+        .highcharts-button {
+            display: none;
+        }
+
+        .only-print,
+        .only-print * {
+            display: none !important;
+        }
+
+        @media print {
+
+            .no-print,
+            .no-print * {
+                display: none !important;
+            }
+
+            .only-print,
+            .only-print * {
+                display: block !important;
+            }
+
+            body {
+                width: 800px;
+                height: 100%;
+            }
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 0.5cm;
+        }
+
+        a:link img {
+            opacity: 1.0;
+            filter: alpha(opacity=100);
+            /* For IE8 and earlier */
+            filter: alpha(opacity=60);
+            /* For IE8 and earlier */
+            transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -webkit-transition: opacity .5s ease-in-out;
+        }
+
+        a:hover img {
+            opacity: 0.6;
+            filter: alpha(opacity=60);
+            /* For IE8 and earlier */
+            transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -webkit-transition: opacity .5s ease-in-out;
+        }
+
+        table tr td {
+            padding-left: 0px;
+            padding-right: 0px;
+            border-collapse: collapse;
+            /* border: 1px solid black; */
+            margin: 5px;
+        }
+
+        .rbtd {
+            border: 1px solid black !important;
+        }
+
+        .page__background,
+        .ons-page,
+        .ons-page__content {
+        background-color: white !important;
+        }
+
+        body {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+  position: static !important;
+  height: auto !important;
+}
+        /* @media(max-width: 1067px) {
+            .rbtd {
+                font-size: 80% !important;
+            }
+            label {
+                font-size: 80% !important;
+            }
+        } */
+        /*
+        @media(max-width: 605px) {
+            .rbtd {
+                font-size: 60% !important;
+            }
+            label {
+                font-size: 60% !important;
+            }
+        } */
+
+
+        /* TESTING */
+        /* @media(max-width: 413px) {
+            .rbtd {
+                font-size: 50% !important;
+            }
+            label {
+                font-size: 50% !important;
+            }
+        } */
+
+
+
+
+        /* #missionlist {
+      width: auto;
+      -webkit-column-width: 325px;
+      -moz-column-width: 325px;
+      column-width: 325px;
+      -webkit-column-count: 3;
+      -moz-column-count: 3;
+      column-count: 3;
+      -webkit-column-gap: 0;
+      -moz-column-gap: 0;
+      column-gap: 0;
+
+    } */
+
+        .missionFmt {
+            padding-right: 3;
+            padding-left: 0;
+            -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        table {
+            border-collapse: separate;
+            border: solid black 1px;
+            border-radius: 6px;
+            -moz-border-radius: 6px;
+        }
+
+        td,
+        th {
+            /* border-left:solid black 1px; */
+            /* border-top:solid black 1px; */
+        }
+
+        td {
+            /* background-color: blue; */
+            border-top: none !important;
+        }
+
+        td:first-child,
+        td:first-child {
+            border-left: none;
+        }
+    </style>
+    <script src="assets/languages.js"></script>
+    <script>
+        versionNum = "Rubrics 6.1.0 MD Embedded Branch"
+versionDay = 5
+versionMonth = 8
+versionYear = 2025
+versionText = ""
+        </script>
+    <script src="assets/js/language-detector.js">
+    </script>
+
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1976d2">
+
+    <link rel="stylesheet" type="text/css" href="minstyle.css">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> -->
+</head>
+
+
+
+<body id="wholeBody">
+
+    <!-- start drawplan-->
+
+    <div id="topbar">
+
+
+        <div class="topbar" id="myTopbar" style="width:100%; height:35px; background-color:#0A122A; top:0;align-items: center;">
+            
+            <i id="langs" style="z-index:10000;text-align:left; color:white; position: relative; margin:auto;padding-left: 3px;top: 1px;">
+
+                <!-- <div id="langs"></div> -->
+            </i>
+            <!-- Tournament:
+<?php
+if (isset($_SESSION["tournament"])) echo htmlspecialchars($_SESSION["tournament"] . " ");
+else echo "None";
+?> -->
+            <script>
+                var page = '';
+                //              var page = window.location.href.split("?")[0].split("#")[0] + '?lang=';
+                var i;
+                for (i = 0; i < langs.length; i++) {
+                    window[langs[i].split(':')[0].split('-')[0]] = page + langs[i].split(':')[0];
+                }
+                var i;
+                // if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) { // DCR is buggy in MSIE, use classic switcher
+                // 	var i;
+                // 	for (i = 0; i < langs.length; i++) {
+                // 		document.write('\
+                //                     <a class="no-print no-mobile" data-ajax="false" href="?lang=' + window[langs[i].split(":")[0].split("-")[0]] + '" onclick="createCookie(\'' + langs[i].split(":")[0] + '\');window.location.href="' + window[langs[i].split(":")[0].split("-")[0]] + '";setTimeout(function(){location.reload(true);},100)" style=" text-decoration: none">\
+                //                     <img src="/images/icons/countries/small/' + langs[i].split(":")[1] + '.png" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" border="0">\
+                //                     </a>\
+                //                     ')
+                // 	}
+                // } else {
+                buf = ""
+                for (i = 0; i < langs.length; i++) {
+                    buf += '\
+                                    <a class="no-print " style="cursor:pointer;" data-ajax="false"  onclick="createCookie(\'' + langs[i].split(":")[0] + '\');language=\'' + window[langs[i].split(":")[0].split("-")[0]] + '\';switchLanguage();" style=" text-decoration: none">\
+                                    <img src="assets/images/langs/' + langs[i].split(":")[3] + '.svg" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" style="object-fit:cover;border-radius:30%;" border="0">\
+                                    </a>\
+                                '
+                }
+                document.getElementById("langs").innerHTML = buf;
+                // }
+            </script>
+
+            <!-- <script>
+// document.getElementById('lang').value = language
+
+// q = window.location.search
+
+// function getParameterByName(name, url) {
+// 	if (!url) url = window.location.href;
+// 	name = name.replace(/[\[\]]/g, "\\$&");
+// 	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+// 		results = regex.exec(url);
+// 	if (!results) return null;
+// 	if (!results[2]) return '';
+// 	return decodeURIComponent(results[2].replace(/\+/g, " "));
+// }
+
+// function changelang(val) {
+// 	if (window.location.search == "") {
+// 		window.location.search = "?lang=" + val
+// 	} else {
+// 		window.location.search = window.location.search.split("&lang=")[0] + "&lang=" + val + "&" + window.location.search.split(language + "&")[1]
+// 	}
+// }
+</script> -->
+
+            <div id="loginstatus" style="text-align:right; color:white; position: relative; margin:auto;padding-right: 3px;top:-20px;">
+                          </div>
+
+            <script>
+                function textFileToArray(filename) {
+                    var reader = (window.XMLHttpRequest != null) ?
+                        new XMLHttpRequest() :
+                        new ActiveXObject("Microsoft.XMLHTTP");
+                    reader.open("GET", filename, false);
+                    reader.send();
+                    return reader.responseText.split(/\r\n|\n|\r/); //split(/(\r\n|\n)/g)
+                }
+
+                function getStatus() {
+                    document.getElementById("loginstatus").innerHTML = textFileToArray('/getLogin.php')[0];
+                    console.log("Fetching login status");
+                }
+                setInterval(function() {
+                    getStatus();
+                }, 600000);
+                //   getStatus()
+            </script>
+
+        </div>
+
+
+
+    </div><br>
+    <div>
+        <script>
+            $(function() {
+                $("#header").load("header.php");
+            });
+        </script>
+        <div id="header"></div><br>
+
+
+
+        <!--end drawplan-->
+
+
+        <img src="assets/images/ajax-loader.gif" id="loadingGif" style="background-color:white; width:100px; height: auto;position:fixed;left:50%;top:50%;margin-left: -50px;margin-top:-50px;z-index:10000000000000000000000000000000000000000;">
+
+        <div id="contentload" style="display: none;">
+            <div class="no-print"><br><br></div>
+            <table class="no-print" style="width:98%; text-align:center; margin-left:auto; margin-right:auto;border:none!important;">
+                <tr>
+                    <td style="width:25%; text-align:left">
+                        <script>
+                            var page = '';
+                            //              var page = window.location.href.split("?")[0].split("#")[0] + '?lang=';
+                            var i;
+                            for (i = 0; i < langs.length; i++) {
+                                window[langs[i].split(':')[0].split('-')[0]] = page + langs[i].split(':')[0];
+                            }
+                            var i;
+                            for (i = 0; i < langs.length; i++) {
+            //                     document.write('\
+            //   <a class="no-print no-mobile" data-ajax="false" href="" onclick="createCookie(\'' + langs[i].split(":")[0] + '\');language=\'' + window[langs[i].split(":")[0].split("-")[0]] + '\';initpage();" style=" text-decoration: none">\
+            //   <img src="assets/images/icons/countries/small/' + langs[i].split(":")[1] + '.png" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" border="0">\
+            //   </a>\
+            //   ')
+                            }
+                        </script>
+
+                    </td>
+
+                    <script>
+                        function getParameterByName(name, url) {
+                            if (!url) url = window.location.href;
+                            name = name.replace(/[\[\]]/g, "\\$&");
+                            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                                results = regex.exec(url);
+                            if (!results) return null;
+                            if (!results[2]) return '';
+                            return decodeURIComponent(results[2].replace(/\+/g, " "));
+                        }
+
+                        if (getParameterByName('team') != null) {
+                            // document.getElementById('team_num').value = getParameterByName('team')
+                        }
+                    </script>
+
+                    <td style="width:50%; font-size:24px; text-align:center">
+                        <b class="no-print" id="title">Judging Rubrics (2020-21)</b>
+                    </td>
+                    <td style="width:25%; font-size:12px; text-align:right">
+                        <img class="only-mobile" alt="FLL Tutorials" style="border:0px solid #021a40;" src="assets/images/flltutorials.png" width="139">
+                    </td>
+                </tr>
+            </table>
+            <section>
+            <!-- <?php
+            echo '<b style="font-size: 150%;"><text>Team Name</text>: ';
+            echo trim(file_get_contents("../teams/" . $_GET["team"] . "/name.txt"));
+            echo "</b><br>";
+            ?> -->
+
+            <b style="font-size: 150%;"><text>Team Name</text>:<input type="text" class="form-control" id="teamname"></b><br>
+            <b style="font-size: 150%;" ><text>Team No.</text>:<input id="team" type="text" class="form-control">
+            <br><text>Round No.</text>:<input type="text" class="form-control" id="round"></b>
+            <script>
+                function getParameterByName(name, url) {
+                    if (!url) url = window.location.href;
+                    name = name.replace(/[\[\]]/g, "\\$&");
+                    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                    if (!results) return null;
+                    if (!results[2]) return '';
+                    return decodeURIComponent(results[2].replace(/\+/g, " "));
+                }
+
+                if (getParameterByName('team') != null) {
+                    document.write('<b style="font-size: 150%;"><text>Team No.</text>: ' + getParameterByName('team'))
+                    document.write('</b>');
+                    //document.write('<br>Tournament ID#: '+getParameterByName('tourn'))
+                }
+            </script>
+    </section>
+
+            <!-- <div role="main" class="ui-content" style="padding-right:0; padding-left:0"> -->
+            <div data-role="tabs">
+
+            <section>
+
+                <div id="tabs-1">
+                    <form>
+
+                        <div id="projectlist" style="overflow-x: auto; ">
+                            <script src="assets/project.js"></script>
+                        </div>
+                        <button data-role="none" data-ajax="false" onclick="setTimeout(function()
+          {
+            rubricCalc()
+      
+          }, 100);" style="max-width: 500px"  class="btn btn-danger" type="reset">Reset</button>
+                    </form>
+                </div>
+                <br><br>
+                <div id="tabs-4">
+
+
+                    <div style="max-width:500px">
+                        <iframe style="display: none;" id="saveframe"></iframe>
+
+                        <form action="" id="serverForm" method="post">
+                            <input type="hidden" id="roundNo" name="roundNo">
+                            <input type="hidden" id="teamNo" name="teamNo">
+                            <input type="hidden" id="store" name="store">
+                            <input type="hidden" id="score" name="score">
+                            <input type="hidden" id="bkp" name="bkp">
+                            <input type="hidden" id="fname" name="fname">
+                            <h3>Judge's Notes (Private)</h3>
+                            <textarea class="form-control" name="privnotes"></textarea>
+                            <b>Label color:</b>
+                            <select class="form-control"  data-native-menu="false" data-role="" name="colorlabel" id="colorlabel">
+                                <option value="inherit">Default</option>
+                                <option value="green">Green</option>
+                                <option value="red">Red</option>
+                                <option value="orange">Orange</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="blue">Blue</option>
+
+                            </select>
+
+                            <script>
+                                document.getElementById("colorlabel").value = "<?php echo file_get_contents("../teams/" . $_GET['team']  . "/robotScoresPriv/ip-priv-color.txt"); ?>"
+                            </script>
+                        </form>
+                        <br><br>
+                        <button class="btn btn-success" onclick="savetoserver();" id="saverTscorer" type="button">Show Save</button>
+                        <textarea type="text" id="showcontent" class="form-control"></textarea>
+                        <button  class="btn btn-success" onclick="loadRBsave(document.getElementById('showcontent').value)">Load Save</button>
+
+                    </div>
+
+                    <br><br><br><br><br>
+                    <input onchange="" style=" position: fixed;
+ bottom: -10000px;
+ left: -100000px;" type="file" accept=".TDRIP" id="fileInput">
+
+                    Advanced:
+                    <button data-role="none" id="importText" onclick=" document.getElementById('fileInput').click()">Load Backup Rubric from File</button>
+                    <br><br>
+        </section>
+                    <script>
+                        round = getParameterByName('round');
+                        team = getParameterByName('team');
+                        tourn = getParameterByName('tourn');
+
+                        function savetoserver() {
+                            // points = parseInt(document.getElementById('allpoints').innerHTML)
+                            // getvar() //var store
+                            round = document.getElementById('round').value;
+                            team = document.getElementById('team').value;                            tourn = getParameterByName('tourn');
+
+                            document.getElementById("roundNo").value = 0
+                            document.getElementById("teamNo").value = team
+                            document.getElementById("score").value = document.getElementById("ippts").innerHTML
+
+                            // filename = team +'-'+round+'.txt'
+                            savedata = getRBSave().join("///");
+
+                            document.getElementById("store").value = savedata
+
+                            // document.getElementById('saveframe').src = encodeURI('/'+tourn+'/save.php?fname=' + filename+'&data='+savedata);
+                            // alert('Saved Score '+points+' points')
+
+
+
+                            var currentTime = new Date()
+                            var day = currentTime.getDate()
+
+                            name = "UNKNOWN"
+                            // role = document.getElementById("role").value
+                            role = "JudgeIP"
+
+                            teamSV = (team).toLocaleString('en-US', {
+                                minimumIntegerDigits: 8,
+                                useGrouping: false
+                            })
+                            round = 0
+                            score = getRBSaveStr()
+                            points = (parseInt(document.getElementById("ippts").innerHTML)).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+
+                            year = (new Date()).getUTCFullYear()
+                            month = ((new Date()).getUTCMonth() + 1).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+                            day = ((new Date()).getUTCDate()).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+
+                            hours = ((new Date()).getUTCHours()).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+                            minutes = ((new Date()).getUTCMinutes()).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+                            seconds = ((new Date()).getUTCSeconds()).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
+
+                            time = year + "-" + month + "-" + day + "_" + hours + minutes + seconds
+                            person = role + "-" + name
+                            match = "team-" + teamSV
+
+                            filename = match + "_" + time + "_round-" + round + "_score-" + points + "_" + person + ".TDRIP"
+
+                            data = team + ";" + round + ";" + score + ";" + role + ";" + name + ";" + filename
+                            // filename = "team-"+document.getElementById("team_num").value+"_round-"+document.getElementById("round_num").value+"_score-"+document.getElementById("allpoints").innerHTML+"_"+currentTime+".TDRRP"
+
+                            document.getElementById("fname").value = filename
+                            document.getElementById("bkp").value = data
+
+
+                            document.getElementById("showcontent").value = savedata
+
+
+                            // document.getElementById("serverForm").submit()
+                        }
+
+
+                        var fileInput = document.getElementById('fileInput');
+
+                        fileInput.addEventListener('change', function(e) {
+                            var file = fileInput.files[0];
+                            var textType = /text.*/;
+
+                            var reader = new FileReader();
+
+                            reader.onload = function(e) {
+                                data = reader.result;
+                                //alert(data)
+
+                                loadScore(data)
+                            }
+
+                            reader.readAsText(file);
+
+                        });
+
+
+                        function loadScore(save) {
+                            roundC = getParameterByName('round');
+                            teamC = getParameterByName('team');
+
+                            console.log(save)
+                            data = save.split(";")
+                            console.log(data)
+                            team = data[0]
+                            round = data[1]
+                            load = data[2]
+                            role = data[3]
+                            name = data[4]
+
+
+                            if (team != teamC) alert("Incorrect team")
+                            else if (role != "JudgeIP") {
+                                if (confirm('This file does not appear to have been created by a Innovation Project judge; are you sure you want to load it?')) {
+                                    loadRBsave(load);
+                                    loadRBsave(load);
+                                    alert("Loaded from file");
+                                }
+                            } else {
+                                loadRBsave(load);
+                                loadRBsave(load);
+                                alert("Loaded from file");
+                            }
+
+                            // document.getElementById("name").value = name
+                            // // document.getElementById("role").value = role
+                            // document.getElementById("team_num").value = team
+                            // document.getElementById("round_num").value = round
+                        }
+
+                        function textFileToArray(filename) {
+                            var reader = (window.XMLHttpRequest != null) ?
+                                new XMLHttpRequest() :
+                                new ActiveXObject("Microsoft.XMLHTTP");
+                            reader.open("GET", filename, false);
+                            reader.send();
+                            return reader.responseText.split('\n'); //.split(/(\r\n|\n)/g);
+                        }
+                    </script>
+
+
+
+
+                </div>
+
+
+
+
+            </div>
+
+            <noscript>Please enable JavaScript to continue using this application.</noscript>
+            <div style="padding-left: 10px; " class="no-print">
+
+                <!--  <text id="tournamentText">Tournament</text><br><br>-->
+
+                <text id="revisionText">Rubrics v1.1.0 (Scorer </text> <text id="versionText">v3.6.0</text>)
+                <!-- Scorer v3.5.0 -->
+                <br>
+                <br><text id="copyrightText">Copyright (c) FLLTutorials.com</text><br>
+                <br>
+                <text id="translatorCredit"></text>
+            </div>
+            <br>
+            <br>
+            <br>
+        </div>
+        <br>
+        <script>
+            $(function() {
+                $("#footer").load("../footer.html");
+            });
+        </script>
+        <div id="footer"></div>
+</body>
+
+<script>
+    window.onload = function() {
+        initpage();
+        // displaysaves();
+        // drawBasic();
+        // loadsave(blanksave);
+        // check_missions();
+        // check_missions('piperemoval');
+        // recalc(0,'piperemoval',0);
+
+        var fileInputRB = document.getElementById('fileInputRB');
+
+        fileInputRB.addEventListener('change', function(e) {
+            var file = fileInput.files[0];
+            var textType = /text.*/;
+
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                data = reader.result;
+                //alert(data)
+
+                window.localStorage.DRRBSscorer = data;
+                maximumRB = window.localStorage.DRRBSscorer.split('&&&').length - 1
+            }
+
+            reader.readAsText(file);
+
+        });
+        try {
+            tournamentload()
+        } catch {}
+    }
+</script>
+
+<script>
+    (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-65893558-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+<div style="display:none" class="no-mobile">
+
+    <a target="_blank" class="no-print" href="https://play.google.com/store/apps/details?id=com.ev3lessons.fllcityshaperscorer">
+        <img id="googleplay" height="100" src="assets/google-play/en_get.svg"></a><br>
+
+    <a target="_blank" class="no-print" href="https://apps.apple.com/app/fll-city-shaper-scorer/id1473760751?ls=1">
+        <img id="appstore" height="68" style="padding: 15px" src="assets/app-store/en.svg"></a>
+
+
+</div>
+
+<style>
+    /* @media (prefers-color-scheme: dark) {
+        .timer {
+            border: 10px solid #121212;
+            border-collapse: collapse;
+        }
+
+        .ui-radio-off {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-btn {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-btn-active {
+            background-color: green !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-radio-on {
+            background-color: green !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        #timerChild {
+            border: 10px solid white !important;
+        }
+
+        #stopwatchChild {
+            border: 10px solid white !important;
+        }
+
+        #contentload {
+            background-color: #121212 !important;
+            color: white;
+            text-shadow: none;
+        }
+
+        #wholeBody {
+            background-color: #121212 !important;
+        }
+
+        .ui-popup {
+            background-color: #121212 !important;
+        }
+
+        Table {
+            border: 1px solid white !important;
+        }
+
+        Text {
+            color: white !important;
+            fill: white !important;
+            text-shadow: none;
+        }
+
+        .timer {
+            border: 10px solid white !important;
+        }
+
+        .ui-page {
+            background-color: #121212 !important;
+        }
+
+        #loadingGif {
+            background-color: #121212 !important;
+        }
+    } */
+
+    .timer {
+        border: 10px solid black;
+    }
+
+    .ui-mobile .ui-page-active {
+        display: block;
+        overflow: visible;
+        overflow-x: visible !important;
+    }
+
+    * {
+        text-shadow: none;
+    }
+
+    /* .ui-shadow-inset {
+    display: none !important;
+  } */
+</style>
+<style>
+    /* @media (prefers-color-scheme: dark) {
+        .timer {
+            border: 10px solid #121212;
+            border-collapse: collapse;
+        }
+
+        .ui-radio-off {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-btn {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-btn-active {
+            background-color: #8aac4a !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        .ui-radio-on {
+            background-color: #8aac4a !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        #timerChild {
+            border: 10px solid white !important;
+        }
+
+        #stopwatchChild {
+            border: 10px solid white !important;
+        }
+
+        #contentload {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        Td {
+            /* background-color: #121212 !important; *
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        #wholeBody {
+            background-color: #121212 !important;
+        }
+
+        .ui-popup {
+            background-color: #121212 !important;
+        }
+
+        Table {
+            border: 1px solid white !important;
+        }
+
+        Text {
+            color: white !important;
+            fill: white !important;
+            text-shadow: none;
+        }
+
+        .timer {
+            border: 10px solid white !important;
+        }
+
+        .ui-page {
+            background-color: #121212 !important;
+        }
+
+        #loadingGif {
+            background-color: #121212 !important;
+        }
+
+        #savesTitle {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+
+        #saves {
+            background-color: #121212 !important;
+            color: white !important;
+            text-shadow: none !important;
+        }
+    } */
+
+    .timer {
+        border: 10px solid black;
+    }
+
+    .ui-mobile .ui-page-active {
+        display: block;
+        overflow: visible;
+        overflow-x: visible !important;
+    }
+
+    /* .ui-shadow-inset {
+    display: none !important;
+  } */
+
+    #tabs-3-popup {
+        width: 90% !important;
+        /*  left: 5% !important; */
+        max-width: 90% !important;
+        /*   top: 35.5px !important;*/
+        margin: 10px !important;
+    }
+
+    #popupMap {
+        margin: 0px !important;
+        height: 100% !important;
+        width: 600px !important;
+    }
+
+    .ui-icon-delete {
+        padding: 5px !important;
+        width: 1.75em;
+        height: 1.75em;
+        text-indent: -9999px;
+        white-space: nowrap !important;
+    }
+
+    @media only screen and (max-width: 600px) {
+        #tabs-3-popup {
+            width: 100% !important;
+            left: 0px !important;
+            max-width: 100% !important;
+            /*   top: 35.5px !important;*/
+            margin: 0px !important;
+        }
+
+        #popupMap-popup {
+            width: 100% !important;
+            left: 0px !important;
+            max-width: 100% !important;
+            /*   top: 35.5px !important;*/
+            margin: 0px !important;
+        }
+
+        #popupMap {
+            margin: 0px !important;
+            width: 100% !important;
+        }
+
+        .ui-popup {
+            /* height: 100% !important; */
+        }
+
+        .ui-popup-container {
+            /* height: 100% !important; */
+        }
+
+        #saveContent {
+            margin-right: 10px !important;
+        }
+
+        .ui-icon-delete {
+            padding: 10px !important;
+            width: 1.75em;
+            height: 1.75em;
+            text-indent: -9999px;
+            white-space: nowrap !important;
+        }
+    }
+</style>
+
+<script>
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    toggleDarkTheme(prefersDark.matches);
+
+    // Listen for changes to the prefers-color-scheme media query
+    prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
+
+    // Add or remove the "dark" class based on if the media query matches
+    function toggleDarkTheme(shouldAdd) {
+        // document.body.classList.toggle('dark', shouldAdd);
+    }
+</script>
+<script>
+    function checkDarkTheme() {
+        return false
+    }
+
+    function textNodesUnder(el) {
+        var n, a = [],
+            walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+        while (n = walk.nextNode()) a.push(n);
+        return a;
+    }
+
+
+
+    pgStart = 0
+
+    function initpage() {
+        languageInit()
+        checkDarkTheme()
+        dictionary = getDict(language);
+
+        if (pgStart == 0) {
+            nodes = textNodesUnder(document.getElementById("wholeBody"));
+            for (i = 0; i < nodes.length; i++) {
+                node = nodes[i];
+                nodes[i].en = nodes[i].data;
+            }
+            pgStart = 1;
+        }
+
+        for (i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+            if (nodes[i].en.trim() != "") nodes[i].data = nodes[i].data.replace(nodes[i].data.trim(), getTranslation(dictionary, nodes[i].en.trim()));
+        }
+
+
+
+        // if (window.localStorage.DRRBGoogleSheet != undefined) {
+        //     document.getElementById('sheetId').value = window.localStorage.DRRBGoogleSheet;
+        //     } else {
+        // 	document.getElementById('sheetId').value = undefinedText;
+        //     }
+
+
+        // if (language == 'he' || language == 'ar') {
+        //   document.getElementById("wholeBody").style.textAlign = "right"
+        // } else {
+        //   document.getElementById("wholeBody").style.textAlign = "left"
+
+        // }
+
+        // countrycode = language.split('-')[0]
+        // if (language == 'he') {
+        //   countrycode = "iw"
+        // }
+
+        // document.getElementById("appstore").src = "assets/app-store/" + language + ".svg"
+        // document.getElementById("googleplay").src = "assets/google-play/" + countrycode + "_get.svg"
+
+        document.getElementById('title').innerHTML = rubricsTitle
+        // document.getElementById('homebtn').innerHTML = home
+
+        // document.getElementById('resetTxt').value = resetText
+        // $('#resetTxt').button('refresh');
+
+        // document.getElementById('pointsTxt').innerHTML = pointsText
+        // document.getElementById('pointsTxt2').innerHTML = pointsText + ": "
+
+        // // document.getElementById('saveGoogleBtn').innerHTML = savescoreText
+        // // document.getElementById('loadTextGoogle').innerHTML = loadsaveText
+
+        // document.getElementById('scorerTitle').innerHTML = scorerText
+        // document.getElementById('savesTitle').innerHTML = savesText
+
+        // // document.getElementById('signin-Google').innerHTML = signin
+        // // document.getElementById('signout-Google').innerHTML = signout
+        // // document.getElementById('GoogleCreate').innerHTML = GoogleCreate
+        // // document.getElementById('GoogleOpen').innerHTML = GoogleOpen
+        // // document.getElementById('googleText').innerHTML = googleSaveText
+        // // document.getElementById('localText').innerHTML = localSaveText
+
+        // // document.getElementById('isIE').innerHTML = isIE
+        // // document.getElementById('googleIntro').innerHTML = googleIntro
+        // // document.getElementById('pastSaves').innerHTML = pastSaves
+        // // document.getElementById('instructions').innerHTML = instructions
+        // // document.getElementById('instructionsA').innerHTML = instructionsA
+        // // document.getElementById('instructionsB').innerHTML = instructionsB
+        // // document.getElementById('instructionsC').innerHTML = instructionsC
+        // // document.getElementById('instructionsD').innerHTML = instructionsD
+        // // document.getElementById('instructionsE').innerHTML = instructionsE
+        // // document.getElementById('instructionsF').innerHTML = instructionsF
+        // // document.getElementById('instructionsG').innerHTML = instructionsG
+
+        // // document.getElementById('teamText').innerHTML = teamText
+        // // document.getElementById('roundText').innerHTML = roundText
+
+        document.getElementById('revisionText').innerHTML = revisionText
+        document.getElementById('copyrightText').innerHTML = copyrightText
+
+        // // document.getElementById('systemText').innerHTML = systemText
+
+        // // document.getElementById('idText').innerHTML = idText
+
+        document.getElementById('versionText').innerHTML = versionText
+
+        // //	document.getElementById('tournamentText').innerHTML = tournamentText
+
+        document.getElementById('translatorCredit').innerHTML = translatorCredit
+
+
+        // //   if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) {
+        // // document.getElementById('notIE').style.display = 'none'
+        // //   } else {
+        // // document.getElementById('isIE').style.display = 'none'
+        // //   }
+
+
+
+
+        // var variables = ""
+        // for (var name in this) {
+        //   if (name[0] == "M" && name != "API_KEY") {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = window[name]
+        //   }
+
+        //   if (name.indexOf("yesText") != -1) {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = yes
+        //   }
+
+        //   if (name.indexOf("noText") != -1) {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = no
+        //   }
+
+        //   if (name.indexOf("partlyText") != -1) {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = partly
+        //   }
+
+        //   if (name.indexOf("completelyText") != -1) {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = completely
+        //   }
+
+        //   if (name.indexOf("mNum") != -1) {
+        //     variables += name + "\n";
+        //     console.log(name)
+        //     document.getElementById(name).innerHTML = missionNumbering
+        //   }
+        // }
+
+        // i = 0
+        // while (i < document.getElementsByTagName("select").length) {
+        //   var myselect = $("select#"+document.getElementsByTagName("select")[i].id);
+        //   myselect[0].selectedIndex =myselect[0].selectedIndex;
+        //   myselect.selectmenu("refresh");
+        //   i=i+1
+        // }
+
+        // displaysaves()
+        // drawBasic()
+        setTimeout(() => {
+                try {
+                tournamentload()
+            } catch {}
+
+        document.getElementById('contentload').style.display = 'block'
+        document.getElementById('loadingGif').style.display = 'none'
+
+            }, "1000");
+
+        // document.getElementById('contentload').style.display = 'block'
+        // document.getElementById('loadingGif').style.display = 'none'
+
+
+        rubricCalc()
+
+        checkDarkTheme()
+
+    }
+
+    // initpage();
+
+    switchLanguage = initpage;
+
+
+    // Query for the toggle that is used to change between themes
+
+    // Listen for the toggle check/uncheck to toggle the dark class on the <body>
+
+    // Listen for changes to the prefers-color-scheme media query
+
+
+
+    // Called by the media query to check/uncheck the toggle
+</script>
+
+</html>

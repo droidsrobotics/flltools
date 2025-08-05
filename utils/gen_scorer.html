@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLL Mission File Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS for syntax highlighting (Okaidia theme for dark background) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter font */
+        }
+        /* Custom styles for better aesthetics and responsiveness */
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+        .section-header {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            text-align: center;
+            color: #1d4ed8; /* text-blue-700 */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .sub-header {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #2563eb; /* text-blue-600 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .input-label {
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: #374151; /* text-gray-700 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .text-input, .select-input, .textarea-input {
+            margin-top: 0.25rem; /* mt-1 */
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            font-size: 0.875rem; /* sm:text-sm */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .text-input:focus, .select-input:focus, .textarea-input:focus {
+            outline: none;
+            border-color: #3b82f6; /* focus:border-blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* focus:ring-blue-500 */
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            font-weight: 600; /* font-semibold */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #2563eb; /* bg-blue-600 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+        }
+        .btn-success {
+            background-color: #10b981; /* bg-green-600 */
+            color: #ffffff;
+        }
+        .btn-success:hover {
+            background-color: #059669; /* hover:bg-green-700 */
+        }
+        .btn-danger {
+            background-color: #ef4444; /* bg-red-600 */
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* hover:bg-red-700 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* bg-gray-600 */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* hover:bg-gray-700 */
+        }
+        .btn-indigo {
+            background-color: #4f46e5; /* bg-indigo-600 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+        }
+        .btn-indigo:hover {
+            background-color: #4338ca; /* hover:bg-indigo-700 */
+        }
+        .mission-card {
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+        }
+        .scoring-element-card {
+            background-color: #ffffff;
+            padding: 0.75rem;
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            border: 1px solid #f3f4f6; /* border-gray-100 */
+        }
+        .code-block {
+            background-color: #1f2937; /* bg-gray-800 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            overflow: hidden;
+            position: relative;
+        }
+        /* Prism.js specific styles to ensure it fits the container */
+        .code-block pre[class*="language-"] {
+            margin: 0; /* Remove default margin from Prism */
+            padding: 1rem; /* Apply padding here instead of pre */
+            overflow-x: auto;
+            white-space: pre-wrap; /* Ensure long lines wrap */
+            word-break: break-all; /* Break words if necessary */
+        }
+        .code-block code[class*="language-"] {
+            font-size: 0.875rem; /* text-sm */
+            color: #ffffff; /* Ensure text color is white on dark background */
+        }
+
+        .message-box {
+            background-color: #dbeafe; /* bg-blue-100 */
+            border: 1px solid #93c5fd; /* border-blue-400 */
+            color: #1e40af; /* text-blue-700 */
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem; /* rounded */
+            position: relative;
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 text-gray-800">
+    <div id="loading-spinner" class="loading-overlay hidden">
+        <div class="text-lg font-semibold text-gray-700">Loading...</div>
+    </div>
+
+    <div class="container">
+        <h1 class="section-header">FLL Mission File Generator</h1>
+
+        <div id="message-container" class="message-box hidden">
+            <span id="message-text"></span>
+        </div>
+
+        <div class="mb-6 border-b pb-4">
+            <label for="seasonName" class="input-label text-lg">Season Name:</label>
+            <input
+                type="text"
+                id="seasonName"
+                class="text-input"
+                placeholder="e.g., CARGO CONNECT 2021"
+            />
+        </div>
+
+        <div class="mb-6 border-b pb-4">
+            <label for="fileInput" class="input-label text-lg">Load from JS File:</label>
+            <input type="file" id="fileInput" accept=".js" class="mt-1 block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"/>
+        </div>
+
+        <h2 class="sub-header">Missions</h2>
+        <div id="missionsContainer" class="space-y-6 mb-8">
+            <!-- Missions will be dynamically added here -->
+        </div>
+
+        <button id="addMissionBtn" class="btn btn-indigo w-full py-3 mb-8">
+            Add New Mission
+        </button>
+
+        <h2 class="sub-header">Custom Special Cases JavaScript</h2>
+        <div class="mb-6 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
+            <p class="text-sm text-gray-600 mb-3">
+                Paste your custom JavaScript for `specialCasesCheck(mission)` here. This will be inserted directly into the generated file.
+                <br/>
+                <span class="font-bold text-red-500">Do NOT include the function declaration itself.</span>
+            </p>
+            <textarea
+                id="specialCasesCheckCode"
+                class="textarea-input font-mono"
+                rows="10"
+                placeholder="// Example:
+// if (mission == &quot;transportationJourney1&quot;) {
+//     if (document.getElementById(&quot;yestransportationJourney1&quot;).checked &amp;&amp; document.getElementById(&quot;yestransportationJourney2&quot;).checked) {
+//         recalc(20, &quot;transportationJourney2&quot;, 1)
+//         recalc(10, &quot;transportationJourney1&quot;, 1)
+//     } else {
+//         recalc(10 * document.getElementById(&quot;yestransportationJourney2&quot;).checked, &quot;transportationJourney1&quot;, document.getElementById(&quot;yestransportationJourney2&quot;)*1)
+//     }
+// }"
+            ></textarea>
+
+            <p class="text-sm text-gray-600 mt-6 mb-3">
+                Paste your custom JavaScript for `specialCasesRecalc(mission)` here. This will be inserted directly into the generated file.
+                <br/>
+                <span class="font-bold text-red-500">Do NOT include the function declaration itself.</span>
+            </p>
+            <textarea
+                id="specialCasesRecalcCode"
+                class="textarea-input font-mono"
+                rows="10"
+                placeholder="// Example:
+// if (document.getElementById(&quot;precision1&quot;).value == 1) {
+//     recalc(10, 'precision1', document.getElementById(&quot;precision1&quot;).value);
+// }"
+            ></textarea>
+        </div>
+
+        <h2 class="sub-header">Generated JavaScript Code</h2>
+        <div class="code-block">
+            <pre><code id="generatedCodeDisplay" class="language-javascript">// Generate code by adding missions and a season name.</code></pre>
+            <button id="copyCodeBtn" class="btn btn-secondary absolute top-2 right-2 text-xs">
+                Copy Code
+            </button>
+        </div>
+    </div>
+
+    <!-- Prism.js JS for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script type="module">
+        // Application State
+        let appState = {
+            missions: [
+                // Default A00: EQUIPMENT INSPECTION
+                {
+                    id: 'A00',
+                    title: 'EQUIPMENT INSPECTION',
+                    image: 'M00.png',
+                    elements: [
+                        {
+                            type: 'button',
+                            id: 'm00a',
+                            points: 20,
+                            description: 'If your robot and all your equipment fi t completely in one launch area and are under a height limit of 12 in. (305 mm) during the pre-match inspection:'
+                        }
+                    ],
+                    buttonEnables: [],
+                    buttonConflicts: [],
+                    sliderEnables: [],
+                    sliderGTEEnables: [],
+                    buttonEnablesSlider: []
+                },
+                // Default A01: Precision
+                {
+                    id: 'A01',
+                    title: 'Precision',
+                    image: 'M17.png',
+                    elements: [
+                        {
+                            type: 'range',
+                            id: 'precision1',
+                            pointsPerUnit: 10,
+                            min: 0,
+                            max: 6,
+                            step: 0,
+                            description: 'How many Precision Tokens are left on the field?'
+                        }
+                    ],
+                    buttonEnables: [],
+                    buttonConflicts: [],
+                    sliderEnables: [],
+                    sliderGTEEnables: [],
+                    buttonEnablesSlider: []
+                },
+                // Default A02: Gracious Professionalism
+                {
+                    id: 'A02',
+                    title: 'Gracious Professionalism',
+                    image: 'M18.png',
+                    elements: [
+                        {
+                            type: 'dropdown',
+                            id: 'graciousProfessionalism',
+                            description: 'Gracious Professionalism® displayed at the robot game table',
+                            options: [
+                                { label: 'Developing', value: 2 },
+                                { label: 'Accomplished', value: 3 },
+                                { label: 'Exceeds', value: 4 }
+                            ]
+                        }
+                    ],
+                    buttonEnables: [],
+                    buttonConflicts: [],
+                    sliderEnables: [],
+                    sliderGTEEnables: [],
+                    buttonEnablesSlider: []
+                }
+            ],
+            seasonName: '',
+            specialCasesCode: {
+                specialCasesCheck: '',
+                specialCasesRecalc: `if (document.getElementById("precision1").value == 1) {
+            recalc(10, 'precision1', document.getElementById("precision1").value);
+        }
+        if (document.getElementById("precision1").value == 2) {
+            recalc(15, 'precision1', document.getElementById("precision1").value);
+        }
+        if (document.getElementById("precision1").value == 3) {
+            recalc(25, 'precision1', document.getElementById("precision1").value);
+        }
+        if (document.getElementById("precision1").value == 4) {
+            recalc(35, 'precision1', document.getElementById("precision1").value);
+        }
+        if (document.getElementById("precision1").value == 5) {
+            recalc(50, 'precision1', document.getElementById("precision1").value);
+        }
+        if (document.getElementById("precision1").value == 6) {
+            recalc(50, 'precision1', document.getElementById("precision1").value);
+        }`,
+            },
+            generatedCode: '',
+            loading: false,
+            message: '',
+        };
+
+        // DOM Elements
+        const seasonNameInput = document.getElementById('seasonName');
+        const missionsContainer = document.getElementById('missionsContainer');
+        const addMissionBtn = document.getElementById('addMissionBtn');
+        const specialCasesCheckCodeTextarea = document.getElementById('specialCasesCheckCode');
+        const specialCasesRecalcCodeTextarea = document.getElementById('specialCasesRecalcCode');
+        const generatedCodeDisplay = document.getElementById('generatedCodeDisplay');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const messageContainer = document.getElementById('message-container');
+        const messageText = document.getElementById('message-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const fileInput = document.getElementById('fileInput');
+
+        // --- Utility Functions ---
+
+        function showLoading() {
+            loadingSpinner.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingSpinner.classList.add('hidden');
+        }
+
+        function showMessage(msg, type = 'info') {
+            messageText.textContent = msg;
+            messageContainer.classList.remove('hidden', 'bg-blue-100', 'border-blue-400', 'text-blue-700', 'bg-red-100', 'border-red-400', 'text-red-700', 'bg-green-100', 'border-green-400', 'text-green-700');
+            if (type === 'info') {
+                messageContainer.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-700');
+            } else if (type === 'error') {
+                messageContainer.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            } else if (type === 'success') {
+                messageContainer.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+            }
+            setTimeout(() => {
+                messageContainer.classList.add('hidden');
+            }, 3000);
+        }
+
+        function generateUniqueId() {
+            return Math.random().toString(36).substring(2, 9);
+        }
+
+        // Helper to convert index to alphabetical character (a, b, c...)
+        function toAlphabetical(index) {
+            let result = '';
+            while (index >= 0) {
+                result = String.fromCharCode(97 + (index % 26)) + result;
+                index = Math.floor(index / 26) - 1;
+            }
+            return result;
+        }
+
+        // --- Code Generation ---
+
+        function generateJsCode() {
+            let blanksaveParts = [];
+            let code = `// This is where all the missions are defined for the season. Ideally, each season, you only have to edit this file, but there are some small areas that need to be changed elsewhere.
+// This uses html.js to draw all the missions to the screen.
+// Mission loader v2.0 Dynamic Content Replacer
+
+specialCasesComplete = 0
+
+function specialCasesCheck(mission) {
+    console.log("check",mission)
+    if (specialCasesComplete != 1) {
+        specialCasesComplete = 1
+    } else { return }
+    // Add your custom special case logic here
+    ${appState.specialCasesCode.specialCasesCheck || '// No custom specialCasesCheck provided'}
+    specialCasesComplete = 0
+}
+
+// Override function when calculating points for each mission
+function specialCasesRecalc(mission) {
+    if (specialCasesComplete != 1) {
+        specialCasesComplete = 1
+        // Add your custom special case recalc logic here
+        ${appState.specialCasesCode.specialCasesRecalc || '// No custom specialCasesRecalc provided'}
+        specialCasesComplete = 0
+    }
+}
+
+function load${appState.seasonName.replace(/[^a-zA-Z0-9]/g, '')}() {
+    let blanksaveParts = [];
+`;
+
+            // Generate blanksave - EXCLUDE COMMENTS
+            appState.missions.forEach(mission => {
+                mission.elements.filter(el => el.type !== 'comment').forEach(element => {
+                    blanksaveParts.push(`${element.id}|0`);
+                });
+            });
+            code += `    blanksave = "${blanksaveParts.join(',')}"\n`;
+            code += `
+    clearbuffer()
+
+    // Draw the layout
+`;
+
+            // Generate mission tables
+            appState.missions.forEach(mission => {
+                // Filter out comments for elementIds array
+                const elementIds = mission.elements.filter(el => el.type !== 'comment').map(el => `'${el.id}'`).join(',');
+                // Determine notePresent based on comments count
+                const commentCount = mission.elements.filter(el => el.type === 'comment').length;
+                const notePresentValue = commentCount; // Use the count directly
+
+                code += `
+    starttable('${mission.id}', "${mission.title}", '${mission.image}', [${elementIds}], ${notePresentValue})
+`;
+                mission.elements.forEach(element => {
+                    if (element.type === "button") {
+                        code += `    createbutton("${element.id}", ${element.points}, "${element.description}")\n`;
+                    } else if (element.type === "dropdown") {
+                        const labels = element.options.map(opt => `"${opt.label}"`).join(',');
+                        const values = element.options.map(opt => opt.value).join(',');
+                        code += `    createdropdown("${element.id}", ["",${labels}], [0, ${values}], "${element.description}")\n`;
+                    } else if (element.type === "range") {
+                        code += `    createrange("${element.id}", ${element.pointsPerUnit}, ${element.min}, ${element.max}, ${element.step}, "${element.description}", '')\n`;
+                    } else if (element.type === "comment") {
+                        code += `    createcomment("${element.description}")\n`;
+                    } else if (element.type === "threeButton") {
+                        code += `    create3button("${element.id}", ${element.points1}, ${element.points2}, "${element.description}")\n`;
+                    }
+                });
+                code += `    endtable()\n`;
+            });
+
+            // Generate global enable and conflict calls after all tables
+            appState.missions.forEach(mission => {
+                mission.buttonEnables.forEach(enableRule => {
+                    code += `    createbuttonenables("${enableRule.sourceId}","${enableRule.targetId}",${enableRule.flag})\n`;
+                });
+                mission.buttonConflicts.forEach(conflictRule => {
+                    code += `    createbuttonconflict("${conflictRule.conflictId}","${conflictRule.missionId}","${conflictRule.priority}")\n`;
+                });
+                mission.sliderEnables.forEach(sliderEnableRule => {
+                    code += `    createsliderenables("${sliderEnableRule.sliderId}","${sliderEnableRule.targetButtonId}",${sliderEnableRule.value})\n`;
+                });
+                mission.sliderGTEEnables.forEach(sliderGTEEnableRule => {
+                    code += `    createsliderenables3("${sliderGTEEnableRule.sliderId}","${sliderGTEEnableRule.targetButtonId}",${sliderGTEEnableRule.threshold})\n`;
+                });
+                mission.buttonEnablesSlider.forEach(buttonEnableSliderRule => {
+                    code += `    createsliderenables2("${buttonEnableSliderRule.sourceButtonId}","${buttonEnableSliderRule.targetSliderId}")\n`;
+                });
+            });
+
+
+            code += `
+    writebuffer("missionlist")
+    try {
+        document.getElementById("title").innerHTML = "FLL ${appState.seasonName.replace(/[^a-zA-Z0-9]/g, '')} Scorer"
+    } catch (error) {
+        // Handle error if element with id "title" is not found
+    }
+}
+
+// Call the load function for the current season
+load${appState.seasonName.replace(/[^a-zA-Z0-9]/g, '')}();
+`;
+
+            appState.generatedCode = code;
+            generatedCodeDisplay.textContent = appState.generatedCode;
+            Prism.highlightAll(); // Apply syntax highlighting
+        }
+
+        // --- DOM Rendering and Event Handling ---
+
+        function renderMissions() {
+            missionsContainer.innerHTML = ''; // Clear existing missions
+            appState.missions.forEach((mission, missionIndex) => {
+                const missionCard = document.createElement('div');
+                missionCard.className = 'mission-card';
+
+                // Determine notePresent status for display
+                const commentCount = mission.elements.filter(el => el.type === 'comment').length;
+                const notePresentStatus = commentCount > 0 ? `Yes (${commentCount} comments)` : 'No';
+
+                missionCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-medium text-gray-800">Mission ${missionIndex + 1}</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-2 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-150 ease-in-out" data-action="move-up-mission" data-mission-index="${missionIndex}" ${missionIndex === 0 ? 'disabled' : ''}>
+                                &#9650; <!-- Up arrow -->
+                            </button>
+                            <button class="px-2 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-150 ease-in-out" data-action="move-down-mission" data-mission-index="${missionIndex}" ${missionIndex === appState.missions.length - 1 ? 'disabled' : ''}>
+                                &#9660; <!-- Down arrow -->
+                            </button>
+                            <button class="btn btn-danger text-sm" data-action="delete-mission" data-mission-index="${missionIndex}">
+                                Delete Mission
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="input-label text-xs">Mission ID:</label>
+                            <input type="text" class="text-input" data-mission-field="id" value="${mission.id}" placeholder="e.g., M01">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Title:</label>
+                            <input type="text" class="text-input" data-mission-field="title" value="${mission.title}" placeholder="e.g., 3D CINEMA">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Image File Name:</label>
+                            <input type="text" class="text-input" data-mission-field="image" value="${mission.image}" placeholder="e.g., M01.png">
+                        </div>
+                        <div class="flex items-center mt-6">
+                            <label class="ml-2 block text-sm font-medium text-gray-700">Note Present: <span class="font-semibold">${notePresentStatus}</span></label>
+                        </div>
+                    </div>
+                    <h4 class="text-lg font-medium text-gray-700 mb-3">Scoring Elements:</h4>
+                    <div class="space-y-4" id="scoringElementsContainer-${missionIndex}">
+                        <!-- Scoring elements will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-scoring-element" data-mission-index="${missionIndex}">
+                        Add Scoring Element
+                    </button>
+
+                    <h4 class="text-lg font-medium text-gray-700 mt-6 mb-3">Button Enable Rules:</h4>
+                    <div class="space-y-4" id="buttonEnablesContainer-${missionIndex}">
+                        <!-- Button enable rules will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-button-enable" data-mission-index="${missionIndex}">
+                        Add Button Enable Rule
+                    </button>
+
+                    <h4 class="text-lg font-medium text-gray-700 mt-6 mb-3">Button Conflicts:</h4>
+                    <div class="space-y-4" id="buttonConflictsContainer-${missionIndex}">
+                        <!-- Button conflicts will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-button-conflict" data-mission-index="${missionIndex}">
+                        Add Button Conflict
+                    </button>
+
+                    <h4 class="text-lg font-medium text-gray-700 mt-6 mb-3">Slider Equals Enables:</h4>
+                    <div class="space-y-4" id="sliderEnablesContainer-${missionIndex}">
+                        <!-- Slider equals enables will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-slider-enable" data-mission-index="${missionIndex}">
+                        Add Slider Equals Enable Rule
+                    </button>
+
+                    <h4 class="text-lg font-medium text-gray-700 mt-6 mb-3">Slider Greater Than/Equal Enables:</h4>
+                    <div class="space-y-4" id="sliderGTEEnablesContainer-${missionIndex}">
+                        <!-- Slider GTE enables will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-slider-gte-enable" data-mission-index="${missionIndex}">
+                        Add Slider GTE Enable Rule
+                    </button>
+
+                    <h4 class="text-lg font-medium text-gray-700 mt-6 mb-3">Button Enables Slider:</h4>
+                    <div class="space-y-4" id="buttonEnablesSliderContainer-${missionIndex}">
+                        <!-- Button enables slider rules will be rendered here -->
+                    </div>
+                    <button class="btn btn-primary mt-4" data-action="add-button-enables-slider" data-mission-index="${missionIndex}">
+                        Add Button Enables Slider Rule
+                    </button>
+                `;
+                missionsContainer.appendChild(missionCard);
+                renderScoringElements(missionIndex);
+                renderButtonEnables(missionIndex);
+                renderButtonConflicts(missionIndex);
+                renderSliderEnables(missionIndex);
+                renderSliderGTEEnables(missionIndex);
+                renderButtonEnablesSlider(missionIndex);
+            });
+        }
+
+        function renderScoringElements(missionIndex) {
+            const scoringElementsContainer = document.getElementById(`scoringElementsContainer-${missionIndex}`);
+            scoringElementsContainer.innerHTML = ''; // Clear existing elements
+
+            appState.missions[missionIndex].elements.forEach((element, elementIndex) => {
+                const elementCard = document.createElement('div');
+                elementCard.className = 'scoring-element-card';
+                let elementHtml = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700 capitalize">${element.type.replace(/([A-Z])/g, ' $1').trim()} Element</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-scoring-element" data-mission-index="${missionIndex}" data-element-index="${elementIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Type:</label>
+                            <select class="select-input text-sm" data-element-field="type" data-mission-index="${missionIndex}" data-element-index="${elementIndex}">
+                                <option value="button" ${element.type === 'button' ? 'selected' : ''}>Button</option>
+                                <option value="threeButton" ${element.type === 'threeButton' ? 'selected' : ''}>3-Option Button</option>
+                                <option value="dropdown" ${element.type === 'dropdown' ? 'selected' : ''}>Dropdown</option>
+                                <option value="range" ${element.type === 'range' ? 'selected' : ''}>Range</option>
+                                <option value="comment" ${element.type === 'comment' ? 'selected' : ''}>Comment</option>
+                            </select>
+                        </div>
+                        ${element.type !== 'comment' ? `
+                        <div>
+                            <label class="input-label text-xs">Element ID:</label>
+                            <input type="text" class="text-input text-sm" data-element-field="id" value="${element.id}" placeholder="e.g., m01a">
+                        </div>
+                        ` : ''}
+                        <div>
+                            <label class="input-label text-xs">Description:</label>
+                            <textarea class="textarea-input text-sm" data-element-field="description" rows="2" placeholder="Text displayed for this element">${element.description}</textarea>
+                        </div>
+                        ${element.type === 'button' ? `
+                        <div>
+                            <label class="input-label text-xs">Points:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="points" value="${element.points}">
+                        </div>
+                        ` : ''}
+                        ${element.type === 'threeButton' ? `
+                        <div>
+                            <label class="input-label text-xs">Points for Partially:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="points1" value="${element.points1}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Points for Completely:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="points2" value="${element.points2}">
+                        </div>
+                        ` : ''}
+                        ${element.type === 'dropdown' ? `
+                        <div class="col-span-2">
+                            <label class="input-label text-xs mb-1">Dropdown Options:</label>
+                            <div id="dropdownOptionsContainer-${missionIndex}-${elementIndex}">
+                                <!-- Dropdown options will be rendered here -->
+                            </div>
+                            <button class="mt-2 px-3 py-1 bg-blue-400 text-white rounded-md text-sm hover:bg-blue-500" data-action="add-dropdown-option" data-mission-index="${missionIndex}" data-element-index="${elementIndex}">
+                                Add Option
+                            </button>
+                        </div>
+                        ` : ''}
+                        ${element.type === 'range' ? `
+                        <div>
+                            <label class="input-label text-xs">Points Per Unit:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="pointsPerUnit" value="${element.pointsPerUnit}">
+                        </div>
+                        <div>
+                            <label class="input-input text-xs">Min Value:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="min" value="${element.min}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Max Value:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="max" value="${element.max}">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Step Value:</label>
+                            <input type="number" class="text-input text-sm" data-element-field="step" value="${element.step}">
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                elementCard.innerHTML = elementHtml;
+                scoringElementsContainer.appendChild(elementCard);
+
+                if (element.type === 'dropdown') {
+                    renderDropdownOptions(missionIndex, elementIndex);
+                }
+            });
+        }
+
+        function renderDropdownOptions(missionIndex, elementIndex) {
+            const optionsContainer = document.getElementById(`dropdownOptionsContainer-${missionIndex}-${elementIndex}`);
+            optionsContainer.innerHTML = ''; // Clear existing options
+
+            appState.missions[missionIndex].elements[elementIndex].options.forEach((option, optIndex) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'flex space-x-2 mb-1';
+                optionDiv.innerHTML = `
+                    <input type="text" class="flex-1 p-1 border border-gray-300 rounded-md shadow-sm text-sm" data-option-field="label" value="${option.label}" placeholder="Label">
+                    <input type="number" class="w-20 p-1 border border-gray-300 rounded-md shadow-sm text-sm" data-option-field="value" value="${option.value}" placeholder="Points">
+                    <button class="px-2 py-1 bg-red-300 text-white rounded-md text-xs hover:bg-red-400" data-action="delete-dropdown-option" data-mission-index="${missionIndex}" data-element-index="${elementIndex}" data-option-index="${optIndex}">
+                        -
+                    </button>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function renderButtonEnables(missionIndex) {
+            const buttonEnablesContainer = document.getElementById(`buttonEnablesContainer-${missionIndex}`);
+            buttonEnablesContainer.innerHTML = ''; // Clear existing rules
+
+            appState.missions[missionIndex].buttonEnables.forEach((rule, ruleIndex) => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'bg-white p-3 rounded-md shadow-sm border border-gray-100';
+                ruleCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Rule ${ruleIndex + 1}</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-button-enable" data-mission-index="${missionIndex}" data-rule-index="${ruleIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Source ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="sourceId" value="${rule.sourceId}" placeholder="e.g., m01a">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Target ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="targetId" value="${rule.targetId}" placeholder="e.g., m01b">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Flag (0 or 1):</label>
+                            <input type="number" class="text-input text-sm" data-rule-field="flag" value="${rule.flag}" min="0" max="1" step="1">
+                        </div>
+                    </div>
+                `;
+                buttonEnablesContainer.appendChild(ruleCard);
+            });
+        }
+
+        function renderButtonConflicts(missionIndex) {
+            const buttonConflictsContainer = document.getElementById(`buttonConflictsContainer-${missionIndex}`);
+            buttonConflictsContainer.innerHTML = ''; // Clear existing rules
+
+            appState.missions[missionIndex].buttonConflicts.forEach((rule, ruleIndex) => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'bg-white p-3 rounded-md shadow-sm border border-gray-100';
+                ruleCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Conflict Rule ${ruleIndex + 1}</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-button-conflict" data-mission-index="${missionIndex}" data-rule-index="${ruleIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Conflict ID (Button 1):</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="conflictId" value="${rule.conflictId}" placeholder="e.g., m01a">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Mission ID (Button 2):</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="missionId" value="${rule.missionId}" placeholder="e.g., m01b">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Priority (Winning ID or empty for mutual):</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="priority" value="${rule.priority}" placeholder="e.g., m01a or leave empty">
+                        </div>
+                    </div>
+                `;
+                buttonConflictsContainer.appendChild(ruleCard);
+            });
+        }
+
+        function renderSliderEnables(missionIndex) {
+            const sliderEnablesContainer = document.getElementById(`sliderEnablesContainer-${missionIndex}`);
+            sliderEnablesContainer.innerHTML = ''; // Clear existing rules
+
+            appState.missions[missionIndex].sliderEnables.forEach((rule, ruleIndex) => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'bg-white p-3 rounded-md shadow-sm border border-gray-100';
+                ruleCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Slider Equals Enable Rule ${ruleIndex + 1}</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-slider-enable" data-mission-index="${missionIndex}" data-rule-index="${ruleIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Slider ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="sliderId" value="${rule.sliderId}" placeholder="e.g., precision1">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Target Button ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="targetButtonId" value="${rule.targetButtonId}" placeholder="e.g., m02b">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Value:</label>
+                            <input type="number" class="text-input text-sm" data-rule-field="value" value="${rule.value}">
+                        </div>
+                    </div>
+                `;
+                sliderEnablesContainer.appendChild(ruleCard);
+            });
+        }
+
+        function renderSliderGTEEnables(missionIndex) {
+            const sliderGTEEnablesContainer = document.getElementById(`sliderGTEEnablesContainer-${missionIndex}`);
+            sliderGTEEnablesContainer.innerHTML = ''; // Clear existing rules
+
+            appState.missions[missionIndex].sliderGTEEnables.forEach((rule, ruleIndex) => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'bg-white p-3 rounded-md shadow-sm border border-gray-100';
+                ruleCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Slider GTE Enable Rule ${ruleIndex + 1}</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-slider-gte-enable" data-mission-index="${missionIndex}" data-rule-index="${ruleIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Slider ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="sliderId" value="${rule.sliderId}" placeholder="e.g., precision1">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Target Button ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="targetButtonId" value="${rule.targetButtonId}" placeholder="e.g., m02b">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Threshold Value:</label>
+                            <input type="number" class="text-input text-sm" data-rule-field="threshold" value="${rule.threshold}">
+                        </div>
+                    </div>
+                `;
+                sliderGTEEnablesContainer.appendChild(ruleCard);
+            });
+        }
+
+        function renderButtonEnablesSlider(missionIndex) {
+            const buttonEnablesSliderContainer = document.getElementById(`buttonEnablesSliderContainer-${missionIndex}`);
+            buttonEnablesSliderContainer.innerHTML = ''; // Clear existing rules
+
+            appState.missions[missionIndex].buttonEnablesSlider.forEach((rule, ruleIndex) => {
+                const ruleCard = document.createElement('div');
+                ruleCard.className = 'bg-white p-3 rounded-md shadow-sm border border-gray-100';
+                ruleCard.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-700">Button Enables Slider Rule ${ruleIndex + 1}</span>
+                        <button class="px-2 py-0.5 bg-red-400 text-white text-xs font-semibold rounded-md hover:bg-red-500 transition duration-150 ease-in-out" data-action="delete-button-enables-slider" data-mission-index="${missionIndex}" data-rule-index="${ruleIndex}">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="input-label text-xs">Source Button ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="sourceButtonId" value="${rule.sourceButtonId}" placeholder="e.g., m01a">
+                        </div>
+                        <div>
+                            <label class="input-label text-xs">Target Slider ID:</label>
+                            <input type="text" class="text-input text-sm" data-rule-field="targetSliderId" value="${rule.targetSliderId}" placeholder="e.g., precision1">
+                        </div>
+                    </div>
+                `;
+                buttonEnablesSliderContainer.appendChild(ruleCard);
+            });
+        }
+
+        function renderUI() {
+            seasonNameInput.value = appState.seasonName;
+            specialCasesCheckCodeTextarea.value = appState.specialCasesCode.specialCasesCheck;
+            specialCasesRecalcCodeTextarea.value = appState.specialCasesCode.specialCasesRecalc;
+            generatedCodeDisplay.textContent = appState.generatedCode;
+
+            renderMissions(); // Re-render all missions and their elements
+            generateJsCode(); // Regenerate code after state update
+        }
+
+        // --- Event Listeners and Handlers ---
+
+        seasonNameInput.addEventListener('input', (e) => {
+            appState.seasonName = e.target.value;
+            generateJsCode();
+        });
+
+        specialCasesCheckCodeTextarea.addEventListener('input', (e) => {
+            appState.specialCasesCode.specialCasesCheck = e.target.value;
+            generateJsCode();
+        });
+
+        specialCasesRecalcCodeTextarea.addEventListener('input', (e) => {
+            appState.specialCasesCode.specialCasesRecalc = e.target.value;
+            generateJsCode();
+        });
+
+        addMissionBtn.addEventListener('click', () => {
+            const newMissionCount = appState.missions.length + 1;
+            const newMission = {
+                id: `M${String(newMissionCount).padStart(2, '0')}`, // Enforce 2 digits
+                title: `New Mission ${newMissionCount}`,
+                image: '',
+                elements: [],
+                buttonEnables: [],
+                buttonConflicts: [],
+                sliderEnables: [],
+                sliderGTEEnables: [],
+                buttonEnablesSlider: []
+            };
+            appState.missions.push(newMission);
+            renderUI();
+        });
+
+        missionsContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            const action = target.dataset.action;
+            const missionIndex = parseInt(target.dataset.missionIndex);
+            const elementIndex = parseInt(target.dataset.elementIndex);
+            const optionIndex = parseInt(target.dataset.optionIndex);
+            const ruleIndex = parseInt(target.dataset.ruleIndex);
+
+            if (action === 'delete-mission') {
+                appState.missions.splice(missionIndex, 1);
+                renderUI();
+            } else if (action === 'add-scoring-element') {
+                const mission = appState.missions[missionIndex];
+                // Generate alphabetical ID for new element
+                const newElementId = `${mission.id.toLowerCase()}${toAlphabetical(mission.elements.length)}`;
+                const newScoringElement = {
+                    type: 'button', // Default to button
+                    id: newElementId,
+                    description: '',
+                    points: 0, // For button
+                    points1: 0, // For threeButton
+                    points2: 0, // For threeButton
+                    options: [{ label: '', value: 0 }], // For dropdown
+                    pointsPerUnit: 0, // For range
+                    min: 0, // For range
+                    max: 0, // For range
+                    step: 0, // For range
+                };
+                mission.elements.push(newScoringElement);
+                renderUI();
+            } else if (action === 'delete-scoring-element') {
+                appState.missions[missionIndex].elements.splice(elementIndex, 1);
+                renderUI();
+            } else if (action === 'add-dropdown-option') {
+                appState.missions[missionIndex].elements[elementIndex].options.push({ label: '', value: 0 });
+                renderUI();
+            } else if (action === 'delete-dropdown-option') {
+                appState.missions[missionIndex].elements[elementIndex].options.splice(optionIndex, 1);
+                renderUI();
+            } else if (action === 'move-up-mission') {
+                moveMission(missionIndex, 'up');
+            } else if (action === 'move-down-mission') {
+                moveMission(missionIndex, 'down');
+            } else if (action === 'add-button-enable') {
+                appState.missions[missionIndex].buttonEnables.push({ sourceId: '', targetId: '', flag: 0 });
+                renderUI();
+            } else if (action === 'delete-button-enable') {
+                appState.missions[missionIndex].buttonEnables.splice(ruleIndex, 1);
+                renderUI();
+            } else if (action === 'add-button-conflict') {
+                appState.missions[missionIndex].buttonConflicts.push({ conflictId: '', missionId: '', priority: '' });
+                renderUI();
+            } else if (action === 'delete-button-conflict') {
+                appState.missions[missionIndex].buttonConflicts.splice(ruleIndex, 1);
+                renderUI();
+            } else if (action === 'add-slider-enable') {
+                appState.missions[missionIndex].sliderEnables.push({ sliderId: '', targetButtonId: '', value: 0 });
+                renderUI();
+            } else if (action === 'delete-slider-enable') {
+                appState.missions[missionIndex].sliderEnables.splice(ruleIndex, 1);
+                renderUI();
+            } else if (action === 'add-slider-gte-enable') {
+                appState.missions[missionIndex].sliderGTEEnables.push({ sliderId: '', targetButtonId: '', threshold: 0 });
+                renderUI();
+            } else if (action === 'delete-slider-gte-enable') {
+                appState.missions[missionIndex].sliderGTEEnables.splice(ruleIndex, 1);
+                renderUI();
+            } else if (action === 'add-button-enables-slider') {
+                appState.missions[missionIndex].buttonEnablesSlider.push({ sourceButtonId: '', targetSliderId: '' });
+                renderUI();
+            } else if (action === 'delete-button-enables-slider') {
+                appState.missions[missionIndex].buttonEnablesSlider.splice(ruleIndex, 1);
+                renderUI();
+            }
+        });
+
+        missionsContainer.addEventListener('input', (e) => {
+            const target = e.target;
+            const missionIndex = parseInt(target.dataset.missionIndex);
+            const elementIndex = parseInt(target.dataset.elementIndex);
+            const optionIndex = parseInt(target.dataset.optionIndex);
+            const ruleIndex = parseInt(target.dataset.ruleIndex);
+
+            if (target.dataset.missionField) {
+                const field = target.dataset.missionField;
+                appState.missions[missionIndex][field] = target.value;
+            } else if (target.dataset.elementField) {
+                const field = target.dataset.elementField;
+                let value = target.value;
+                if (['points', 'points1', 'points2', 'pointsPerUnit', 'min', 'max', 'step'].includes(field)) {
+                    value = parseInt(value) || 0;
+                }
+                // If type changes, reset other fields to default for the new type
+                if (field === 'type') {
+                    const newType = value;
+                    const oldElement = appState.missions[missionIndex].elements[elementIndex];
+                    const newElement = {
+                        type: newType,
+                        id: oldElement.id, // Keep the ID
+                        description: oldElement.description, // Keep description
+                        points: 0, // Default for button
+                        points1: 0, // Default for threeButton
+                        points2: 0, // Default for threeButton
+                        options: [{ label: '', value: 0 }], // Default for dropdown
+                        pointsPerUnit: 0, // Default for range
+                        min: 0, // Default for range
+                        max: 0, // Default for range
+                        step: 0, // Default for range
+                    };
+                    appState.missions[missionIndex].elements[elementIndex] = newElement;
+                } else {
+                    appState.missions[missionIndex].elements[elementIndex][field] = value;
+                }
+            } else if (target.dataset.optionField) {
+                const field = target.dataset.optionField;
+                let value = target.value;
+                if (field === 'value') {
+                    value = parseInt(value) || 0;
+                }
+                appState.missions[missionIndex].elements[elementIndex].options[optionIndex][field] = value;
+            } else if (target.dataset.ruleField) {
+                const field = target.dataset.ruleField;
+                let value = target.value;
+                if (field === 'flag' || field === 'value' || field === 'threshold') {
+                    value = parseInt(value) || 0;
+                }
+                // Update the correct array based on the rule type
+                if (target.closest('[id^="buttonEnablesContainer-"]')) {
+                    appState.missions[missionIndex].buttonEnables[ruleIndex][field] = value;
+                } else if (target.closest('[id^="buttonConflictsContainer-"]')) {
+                    appState.missions[missionIndex].buttonConflicts[ruleIndex][field] = value;
+                } else if (target.closest('[id^="sliderEnablesContainer-"]')) {
+                    appState.missions[missionIndex].sliderEnables[ruleIndex][field] = value;
+                } else if (target.closest('[id^="sliderGTEEnablesContainer-"]')) {
+                    appState.missions[missionIndex].sliderGTEEnables[ruleIndex][field] = value;
+                } else if (target.closest('[id^="buttonEnablesSliderContainer-"]')) {
+                    appState.missions[missionIndex].buttonEnablesSlider[ruleIndex][field] = value;
+                }
+            }
+            renderUI(); // Re-render to reflect changes and re-generate code
+        });
+
+        copyCodeBtn.addEventListener('click', () => {
+            const textarea = document.createElement('textarea');
+            textarea.value = generatedCodeDisplay.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showMessage('Code copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showMessage('Failed to copy code.', 'error');
+            }
+            document.body.removeChild(textarea);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    parseJsFileContent(event.target.result);
+                };
+                reader.onerror = (error) => {
+                    console.error("Error reading file:", error);
+                    showMessage("Error reading file. Please try again.", 'error');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // --- File Parsing Logic ---
+
+        function parseJsFileContent(fileContent) {
+            showLoading(); // Still show loading for file parsing
+            try {
+                const newMissions = [];
+                let newSeasonName = '';
+                let newSpecialCasesCheck = '';
+                let newSpecialCasesRecalc = '';
+
+                // 1. Extract season name from load function
+                const loadFuncMatch = fileContent.match(/function load([a-zA-Z0-9]+)\(\) {/);
+                if (loadFuncMatch && loadFuncMatch[1]) {
+                    newSeasonName = loadFuncMatch[1];
+                    // Attempt to convert camelCase to more readable format
+                    newSeasonName = newSeasonName.replace(/([A-Z])/g, ' $1').trim();
+                    newSeasonName = newSeasonName.charAt(0).toUpperCase() + newSeasonName.slice(1);
+                }
+
+                // 2. Extract specialCasesCheck and specialCasesRecalc
+                // Updated regex to be more robust
+                const specialCasesCheckMatch = fileContent.match(/function specialCasesCheck\(mission\) {[\s\S]*?\/\/\s*Add your custom special case logic here\s*([\s\S]*?)(?=\s*specialCasesComplete = 0)/);
+                if (specialCasesCheckMatch && specialCasesCheckMatch[1]) {
+                    newSpecialCasesCheck = specialCasesCheckMatch[1].trim();
+                }
+
+                // Updated regex for specialCasesRecalc to be more robust
+                const specialCasesRecalcMatch = fileContent.match(/function specialCasesRecalc\(mission\) {[\s\S]*?\/\/\s*Add your custom special case recalc logic here\s*([\s\S]*?)(?=\s*specialCasesComplete = 0)/);
+                if (specialCasesRecalcMatch && specialCasesRecalcMatch[1]) {
+                    newSpecialCasesRecalc = specialCasesRecalcMatch[1].trim();
+                }
+
+                // Temporary arrays to hold global rules during parsing
+                let tempButtonEnables = [];
+                let tempButtonConflicts = [];
+                let tempSliderEnables = [];
+                let tempSliderGTEEnables = [];
+                let tempButtonEnablesSlider = [];
+
+                // 3. Parse missions
+                const missionBlocks = fileContent.split(/starttable\(/).slice(1); // Split by starttable and remove the part before the first one
+
+                missionBlocks.forEach(block => {
+                    const missionEndIndex = block.indexOf('endtable()');
+                    if (missionEndIndex === -1) return; // Skip incomplete blocks
+
+                    const missionContent = block.substring(0, missionEndIndex);
+
+                    const startTableMatch = missionContent.match(/^'(.*?)',\s*"(.*?)",\s*'(.*?)',\s*\[(.*?)],\s*(.*?)\)/);
+                    if (!startTableMatch) return;
+
+                    const missionId = startTableMatch[1];
+                    const missionTitle = startTableMatch[2];
+                    const missionImage = startTableMatch[3];
+
+                    const newMission = {
+                        id: missionId,
+                        title: missionTitle,
+                        image: missionImage,
+                        elements: [],
+                        buttonEnables: [],
+                        buttonConflicts: [],
+                        sliderEnables: [],
+                        sliderGTEEnables: [],
+                        buttonEnablesSlider: []
+                    };
+
+                    // Parse scoring elements within the mission block
+                    const elementLines = missionContent.split('\n');
+                    elementLines.forEach(line => {
+                        line = line.trim();
+                        let match;
+
+                        // createbutton
+                        match = line.match(/createbutton\("(.*?)",\s*(\d+),\s*"(.*?)"\)/);
+                        if (match) {
+                            newMission.elements.push({
+                                type: 'button',
+                                id: match[1],
+                                points: parseInt(match[2]),
+                                description: match[3]
+                            });
+                            return;
+                        }
+
+                        // create3button
+                        match = line.match(/create3button\("(.*?)",\s*(\d+),\s*(\d+),\s*"(.*?)"\)/);
+                        if (match) {
+                            newMission.elements.push({
+                                type: 'threeButton',
+                                id: match[1],
+                                points1: parseInt(match[2]),
+                                points2: parseInt(match[3]),
+                                description: match[4]
+                            });
+                            return;
+                        }
+
+                        // createdropdown
+                        match = line.match(/createdropdown\("(.*?)",\s*\["",(.*?)],\s*\[0,\s*(.*?)],\s*"(.*?)"\)/);
+                        if (match) {
+                            const labels = match[2].split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                            const values = match[3].split(',').map(s => parseInt(s.trim()));
+                            const options = labels.map((label, i) => ({ label, value: values[i] }));
+                            newMission.elements.push({
+                                type: 'dropdown',
+                                id: match[1],
+                                description: match[4],
+                                options: options
+                            });
+                            return;
+                        }
+
+                        // createrange
+                        match = line.match(/createrange\("(.*?)",\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*"(.*?)",\s*''\)/);
+                        if (match) {
+                            newMission.elements.push({
+                                type: 'range',
+                                id: match[1],
+                                pointsPerUnit: parseInt(match[2]),
+                                min: parseInt(match[3]),
+                                max: parseInt(match[4]),
+                                step: parseInt(match[5]),
+                                description: match[6]
+                            });
+                            return;
+                        }
+
+                        // createcomment
+                        match = line.match(/createcomment\("(.*?)"\)/);
+                        if (match) {
+                            newMission.elements.push({
+                                type: 'comment',
+                                id: generateUniqueId(),
+                                description: match[1]
+                            });
+                            return;
+                        }
+                    });
+                    newMissions.push(newMission);
+                });
+
+                // Parse global enable and conflict calls (outside starttable/endtable blocks)
+                // These are typically at the end of the load function in the source file
+                const globalRulesSection = fileContent.substring(fileContent.indexOf('endtable()') + 'endtable()'.length); // Start after the last endtable
+
+                const globalRuleLines = globalRulesSection.split('\n');
+                globalRuleLines.forEach(line => {
+                    line = line.trim();
+                    let match;
+
+                    // createbuttonenables
+                    match = line.match(/createbuttonenables\("(.*?)","(.*?)"(?:,(\d+))?\)/);
+                    if (match) {
+                        tempButtonEnables.push({
+                            sourceId: match[1],
+                            targetId: match[2],
+                            flag: match[3] ? parseInt(match[3]) : 0
+                        });
+                        return;
+                    }
+
+                    // createbuttonconflict
+                    match = line.match(/createbuttonconflict\("(.*?)","(.*?)","(.*?)"\)/);
+                    if (match) {
+                        tempButtonConflicts.push({
+                            conflictId: match[1],
+                            missionId: match[2],
+                            priority: match[3]
+                        });
+                        return;
+                    }
+
+                    // createsliderenables
+                    match = line.match(/createsliderenables\("(.*?)","(.*?)"(?:,(\d+))?\)/);
+                    if (match) {
+                        tempSliderEnables.push({
+                            sliderId: match[1],
+                            targetButtonId: match[2],
+                            value: match[3] ? parseInt(match[3]) : 0
+                        });
+                        return;
+                    }
+
+                    // createsliderenables3
+                    match = line.match(/createsliderenables3\("(.*?)","(.*?)"(?:,(\d+))?\)/);
+                    if (match) {
+                        tempSliderGTEEnables.push({
+                            sliderId: match[1],
+                            targetButtonId: match[2],
+                            threshold: match[3] ? parseInt(match[3]) : 0
+                        });
+                        return;
+                    }
+
+                    // createsliderenables2
+                    match = line.match(/createsliderenables2\("(.*?)","(.*?)"\)/);
+                    if (match) {
+                        tempButtonEnablesSlider.push({
+                            sourceButtonId: match[1],
+                            targetSliderId: match[2]
+                        });
+                        return;
+                    }
+                });
+
+                // Distribute parsed global rules to their respective missions
+                newMissions.forEach(mission => {
+                    mission.buttonEnables = tempButtonEnables.filter(rule => 
+                        mission.elements.some(el => el.id === rule.sourceId || el.id === rule.targetId)
+                    );
+                    mission.buttonConflicts = tempButtonConflicts.filter(rule =>
+                        mission.elements.some(el => el.id === rule.conflictId || el.id === rule.missionId)
+                    );
+                    mission.sliderEnables = tempSliderEnables.filter(rule =>
+                        mission.elements.some(el => el.id === rule.sliderId || el.id === rule.targetButtonId)
+                    );
+                    mission.sliderGTEEnables = tempSliderGTEEnables.filter(rule =>
+                        mission.elements.some(el => el.id === rule.sliderId || el.id === rule.targetButtonId)
+                    );
+                    mission.buttonEnablesSlider = tempButtonEnablesSlider.filter(rule =>
+                        mission.elements.some(el => el.id === rule.sourceButtonId || el.id === rule.targetSliderId)
+                    );
+                });
+
+
+                // Update appState and render UI
+                appState.seasonName = newSeasonName;
+                appState.missions = newMissions;
+                appState.specialCasesCode.specialCasesCheck = newSpecialCasesCheck;
+                appState.specialCasesCode.specialCasesRecalc = newSpecialCasesRecalc;
+                showMessage(`Successfully loaded configuration from file!`, 'success');
+
+            } catch (error) {
+                console.error("Error parsing JS file:", error);
+                showMessage("Error parsing JS file. Ensure it's in the correct format.", 'error');
+                // Reset to default missions on error
+                appState.seasonName = '';
+                appState.missions = appState.missions.slice(0, 3);
+                appState.specialCasesCode = { specialCasesCheck: '', specialCasesRecalc: appState.specialCasesCode.specialCasesRecalc };
+            } finally {
+                hideLoading();
+                renderUI(); // Always re-render UI
+            }
+        }
+
+        // Function to move missions up or down
+        function moveMission(index, direction) {
+            if (direction === 'up' && index > 0) {
+                [appState.missions[index - 1], appState.missions[index]] = [appState.missions[index], appState.missions[index - 1]];
+            } else if (direction === 'down' && index < appState.missions.length - 1) {
+                [appState.missions[index + 1], appState.missions[index]] = [appState.missions[index], appState.missions[index + 1]];
+            }
+            renderUI();
+        }
+
+        // Initialize on window load
+        window.onload = function() {
+            // Set initial default specialCasesRecalc
+            specialCasesRecalcCodeTextarea.value = appState.specialCasesCode.specialCasesRecalc;
+            renderUI(); // Initial render
+            hideLoading(); // Ensure loading spinner is hidden on initial load
+        };
+    </script>
+</body>
+</html>
+

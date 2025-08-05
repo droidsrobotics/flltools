@@ -1,0 +1,1123 @@
+<script>
+    function download(data, filename, type) {
+        var file = new Blob([data], {
+            type: type
+        });
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+</script>
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>FLL Scorer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+
+
+    <script>
+        $(document).bind('mobileinit', function() {
+            $.mobile.changePage.defaults.changeHash = false;
+            $.mobile.hashListeningEnabled = false;
+            $.mobile.pushStateEnabled = false;
+        });
+
+        language = "en"
+    </script>
+    <script src="assets/js/highcharts.js"></script>
+    <script src="assets/js/exporting.js"></script>
+    <script src="assets/js/scorer.js"></script>
+    <script src="assets/js/timers.js"></script>
+    <script src="assets/js/saver_new.js"></script>
+    <script src="assets/js/html_new.js"></script>
+    <!-- <script src="assets/js/jquery.mobile-1.4.5.min.js"></script> -->
+
+    <script type="text/javascript" src="assets/js/jqm-spinbox.min.js"></script>
+    <link rel="manifest" href="assets/scorer.webmanifest">
+    <script src="assets/js/download.js"></script>
+
+    <!-- <link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css"> -->
+    <!--    <link rel="stylesheet" href="assets/css/tournament.css"> -->
+    <!-- <link rel="stylesheet" href="assets/css/jquery.mobile.icons.min.css" /> -->
+    <!-- <link rel="stylesheet" href="assets/css/scorer.min.css" /> -->
+
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+<link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+<script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+<!-- <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script> -->
+
+
+
+
+    <div id="mobileCSS"></div>
+    <script>
+        window.mobileAndTabletCheck = function() {
+            let check = false;
+            (function(a) {
+                if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+            })(navigator.userAgent || navigator.vendor || window.opera);
+            return check;
+        };
+
+        function detectMob() {
+            const toMatch = [
+                /Android/i,
+                /webOS/i,
+                /iPhone/i,
+                /iPad/i,
+                /iPod/i,
+                /BlackBerry/i,
+                /Windows Phone/i
+            ];
+
+            return toMatch.some((toMatchItem) => {
+                return navigator.userAgent.match(toMatchItem);
+            });
+        }
+
+        function detectIOS() {
+            var standalone = window.navigator.standalone,
+                userAgent = window.navigator.userAgent.toLowerCase(),
+                safari = /safari/.test(userAgent),
+                ios = /iphone|ipod|ipad/.test(userAgent);
+
+            if (ios) {
+                if (!standalone && safari) {
+                    return false
+                } else if (standalone && !safari) {
+                    return true
+                } else if (!standalone && !safari) {
+                    return true
+                };
+            } else {
+                return false
+            };
+        }
+        //document.write(navigator.userAgent)
+        if (mobileAndTabletCheck()) {
+            document.getElementById("mobileCSS").innerHTML = "<style>.no-mobile { display: none;}</style>"
+        } else {
+            document.getElementById("mobileCSS").innerHTML = "<style>.no-mobile { display: inline;}</style>"
+        }
+        // alert(detectMob())
+    </script>
+    <style>
+        ons-radio input {
+  scroll-margin: 0 !important;
+  scroll-padding: 0 !important;
+}
+        .only-mobile {
+            display: none;
+        }
+
+        .highcharts-button {
+            display: none;
+        }
+
+        .only-print,
+        .only-print * {
+            display: none !important;
+        }
+
+        @media print {
+
+            .no-print,
+            .no-print * {
+                display: none !important;
+            }
+
+            .only-print,
+            .only-print * {
+                display: block !important;
+            }
+
+            body {
+                width: 800px;
+                height: 100%;
+            }
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 0.5cm;
+        }
+
+        a:link img {
+            opacity: 1.0;
+            filter: alpha(opacity=100);
+            /* For IE8 and earlier */
+            filter: alpha(opacity=60);
+            /* For IE8 and earlier */
+            transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -webkit-transition: opacity .5s ease-in-out;
+        }
+
+        a:hover img {
+            opacity: 0.6;
+            filter: alpha(opacity=60);
+            /* For IE8 and earlier */
+            transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -webkit-transition: opacity .5s ease-in-out;
+        }
+
+        table tr td {
+            padding-left: 0px;
+            padding-right: 0px;
+            border-collapse: collapse;
+        }
+
+        #missionlist {
+            width: auto;
+            -webkit-column-width: 325px;
+            -moz-column-width: 325px;
+            column-width: 325px;
+            -webkit-column-count: 4;
+            -moz-column-count: 4;
+            column-count: 4;
+            -webkit-column-gap: 0;
+            -moz-column-gap: 0;
+            column-gap: 0;
+        }
+
+        .missionFmt {
+            padding-right: 3;
+            padding-left: 0;
+            -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        * {
+            text-shadow: none;
+        }
+
+        .page__background,
+        .ons-page,
+        .ons-page__content {
+        background-color: white !important;
+        }
+
+        body {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+  position: static !important;
+  height: auto !important;
+}
+
+input.btn-check {
+  display: none !important
+}
+    </style>
+    <script src="assets/languages.js"></script>
+    <script>
+        versionNum = "Scorer 6.1.0 Embedded MD (Tournament)"
+versionDay = 5
+versionMonth = 8
+versionYear = 2025
+versionText = ""
+        </script>
+
+    <script src="assets/js/language-detector.js">
+    </script>
+
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1976d2">
+
+    <link rel="stylesheet" type="text/css" href="minstyle.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+</head>
+
+
+<body id="wholeBody" onload="initpage()">
+
+
+    <div id="topbar">
+
+      
+
+        <div class="topbar" id="myTopbar" style="width:100%; height:35px; background-color:#0A122A; top:0;align-items: center;">
+  
+            <i id="langs" style="z-index:10000;text-align:left; color:white; position: relative; margin:auto;padding-left: 3px;top: 1px;">
+
+                <!-- <div id="langs"></div> -->
+            </i>
+            <!-- Tournament:
+		<?php
+        if (isset($_SESSION["tournament"])) echo htmlspecialchars($_SESSION["tournament"] . " ");
+        else echo "None";
+        ?> -->
+            <script>
+                var page = '';
+                //              var page = window.location.href.split("?")[0].split("#")[0] + '?lang=';
+                var i;
+                for (i = 0; i < langs.length; i++) {
+                    window[langs[i].split(':')[0].split('-')[0]] = page + langs[i].split(':')[0];
+                }
+                var i;
+                // if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) { // DCR is buggy in MSIE, use classic switcher
+                // 	var i;
+                // 	for (i = 0; i < langs.length; i++) {
+                // 		document.write('\
+                //                     <a class="no-print no-mobile" data-ajax="false" href="?lang=' + window[langs[i].split(":")[0].split("-")[0]] + '" onclick="createCookie(\'' + langs[i].split(":")[0] + '\');window.location.href="' + window[langs[i].split(":")[0].split("-")[0]] + '";setTimeout(function(){location.reload(true);},100)" style=" text-decoration: none">\
+                //                     <img src="/images/icons/countries/small/' + langs[i].split(":")[1] + '.png" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" border="0">\
+                //                     </a>\
+                //                     ')
+                // 	}
+                // } else {
+                buf = ""
+                for (i = 0; i < langs.length; i++) {
+                    buf += '\
+                                    <a class="no-print " style="cursor:pointer;" data-ajax="false"  onclick="createCookie(\'' + langs[i].split(":")[0] + '\');language=\'' + window[langs[i].split(":")[0].split("-")[0]] + '\';switchLanguage();" style=" text-decoration: none">\
+                                    <img src="assets/images/langs/' + langs[i].split(":")[3] + '.svg" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" style="object-fit:cover;border-radius:30%;" border="0">\
+                                    </a>\
+                                '
+                }
+                document.getElementById("langs").innerHTML = buf;
+                // }
+            </script>
+
+            <!-- <script>
+		// document.getElementById('lang').value = language
+
+		// q = window.location.search
+
+		// function getParameterByName(name, url) {
+		// 	if (!url) url = window.location.href;
+		// 	name = name.replace(/[\[\]]/g, "\\$&");
+		// 	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		// 		results = regex.exec(url);
+		// 	if (!results) return null;
+		// 	if (!results[2]) return '';
+		// 	return decodeURIComponent(results[2].replace(/\+/g, " "));
+		// }
+
+		// function changelang(val) {
+		// 	if (window.location.search == "") {
+		// 		window.location.search = "?lang=" + val
+		// 	} else {
+		// 		window.location.search = window.location.search.split("&lang=")[0] + "&lang=" + val + "&" + window.location.search.split(language + "&")[1]
+		// 	}
+		// }
+	</script> -->
+
+            <div id="loginstatus" style="text-align:right; color:white; position: relative; margin:auto;padding-right: 3px;top:-20px;">
+               
+            </div>
+
+            <script>
+                function textFileToArray(filename) {
+                    var reader = (window.XMLHttpRequest != null) ?
+                        new XMLHttpRequest() :
+                        new ActiveXObject("Microsoft.XMLHTTP");
+                    reader.open("GET", filename, false);
+                    reader.send();
+                    return reader.responseText.split(/\r\n|\n|\r/); //split(/(\r\n|\n)/g)
+                }
+
+                function getStatus() {
+                    document.getElementById("loginstatus").innerHTML = textFileToArray('/getLogin.php')[0];
+                    console.log("Fetching login status");
+                }
+                setInterval(function() {
+                    getStatus();
+                }, 600000);
+                //   getStatus()
+            </script>
+
+        </div>
+
+
+
+    </div><br>
+    <div>
+        <script>
+            $(function() {
+                $("#header").load("header.php");
+            });
+        </script>
+        <div id="header"></div><br>
+
+        <!-- start drawplan-->
+
+
+        <script>
+            function tournamentload() {
+                round = getParameterByName('round');
+                team = getParameterByName('team');
+                tourn = getParameterByName('tourn');
+                filename = team + '-' + round + '.txt'
+                // loadsave(("<?php echo file_get_contents("../teams/" . $_GET["team"] . "/robotScores/" .  $_GET["round"] . ".txt");?>").split(';')[1])
+                // loadsave(("<?php echo file_get_contents("../teams/" . $_GET["team"] . "/robotScores/" .  $_GET["round"] . ".txt");?>").split(';')[1])
+
+                // loadsave(textFileToArray("../teams/" + team + "/robotScores/" + round + ".txt")[0].split(';')[1])
+                // loadsave(textFileToArray("../teams/" + team + "/robotScores/" + round + ".txt")[0].split(';')[1])
+
+            }
+        </script>
+
+        <!--end drawplan-->
+
+
+        <!-- <img src="assets/images/ajax-loader.gif" id="loadingGif" style="background-color:white; width:50px; height: auto;position:fixed;left:50%;top:50%;margin-left: -25px;margin-top:-25px;z-index:10000000000000000000000000000000000000000;"> -->
+        <div class="loader" id="loadingGif" style="position:fixed;left:50%;top:50%;margin-left: -25px;margin-top:-25px;z-index:10000000000000000000000000000000000000000;"></div>
+        <style>
+            .loader {
+                border: 16px solid #f3f3f3;
+                /* Light grey */
+                border-top: 16px solid #3498db;
+                /* Blue */
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                animation: spin 2s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        <div id="contentload" style="display: none;">
+            <!--display:none;-->
+            <br><br><br>
+            <table style="width:98%; text-align:center; margin-left:auto; margin-right:auto;border:none!important;">
+                <tr>
+                    <td style="width:25%; text-align:left">
+                        <script>
+                            var page = '';
+                            //              var page = window.location.href.split("?")[0].split("#")[0] + '?lang=';
+                            var i;
+                            for (i = 0; i < langs.length; i++) {
+                                window[langs[i].split(':')[0].split('-')[0]] = page + langs[i].split(':')[0];
+                            }
+                            var i;
+                            if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) { // DCR is buggy in MSIE, use classic switcher
+                                var i;
+                                for (i = 0; i < langs.length; i++) {}
+                                //     document.write('\
+                                // <a class="no-print no-mobile" data-ajax="false" href="?lang=' + window[langs[i].split(":")[0].split("-")[0]] + '" onclick="createCookie(\'' + langs[i].split(":")[0] + '\');window.location.href="' + window[langs[i].split(":")[0].split("-")[0]] + '";setTimeout(function(){location.reload(true);},100)" style=" text-decoration: none">\
+                                // <img src="assets/images/icons/countries/small/' + langs[i].split(":")[1] + '.png" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" border="0">\
+                                // </a>\
+                                // ')
+                                // }
+                            } else {
+                                for (i = 0; i < langs.length; i++) {
+                                //     document.write('\
+                                //     <a class="no-print " data-ajax="false" href="" onclick="createCookie(\'' + langs[i].split(":")[0] + '\');language=\'' + window[langs[i].split(":")[0].split("-")[0]] + '\';switchLanguage();" style=" text-decoration: none">\
+                                //     <img src="assets/images/icons/countries/small/' + langs[i].split(":")[1] + '.png" alt="' + langs[i].split(":")[2] + '" title="' + langs[i].split(":")[2] + '" width="26" height="26" border="0">\
+                                //     </a>\
+                                // ')
+                                }
+                            }
+                        </script>
+
+                    </td>
+                    <!-- <?php
+                    echo '<b style="font-size: 150%;"><text>Team Name</text>: ';
+                    echo trim(file_get_contents("../teams/" . $_GET["team"] . "/name.txt"));
+                    echo "</b><br>";
+                    ?> -->
+                    <b style="font-size: 150%;"><text>Team Name</text>:<input type="text" class="form-control" id="teamname"></b><br>
+                    <b style="font-size: 150%;" ><text>Team No.</text>:<input id="team" type="text" class="form-control">
+                    <br><text>Round No.</text>:<input type="text" class="form-control" id="round"></b>
+                    <script>
+                        function getParameterByName(name, url) {
+                            if (!url) url = window.location.href;
+                            name = name.replace(/[\[\]]/g, "\\$&");
+                            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                                results = regex.exec(url);
+                            if (!results) return null;
+                            if (!results[2]) return '';
+                            return decodeURIComponent(results[2].replace(/\+/g, " "));
+                        }
+
+                        // if (getParameterByName('team') != null) {
+                        //     document.write('<b style="font-size: 150%;"><text>Team No.</text>: ' + getParameterByName('team'))
+                        //     document.write('<br><text>Round No.</text>: ' + getParameterByName('round') + '</b>')
+                        //     //document.write('<br>Tournament ID#: '+getParameterByName('tourn'))
+                        // }
+                    </script>
+
+
+                    <td style="width:50%; font-size:24px; text-align:center">
+                        <b id="title">FLL UNEARTHED Scorer</b>
+                    </td>
+                    <td style="width:25%; font-size:12px; text-align:right">
+                        <!-- <img alt="FLL..." style="border:1px solid #021a40;" src="assets/images/FLL.png" height="57"> <img alt="INTO ORBIT..." style="border:1px solid #021a40;" src="assets/images/replay.jpg" height="57">  -->
+                        <img alt="FLL Tutorials" style="border:1px solid #021a40;" src="assets/images/flltutorials.png" width="139"><img class="only-mobile" alt="FLL Tutorials" style="border:1px solid #021a40;" src="assets/images/flltutorials.png" width="139">
+                    </td>
+                </tr>
+            </table>
+
+
+
+            <!-- <div role="main" class="ui-content" style="padding-right:0; padding-left:0"> -->
+            <div data-role="tabs">
+
+                <div id="tabs-1">
+
+                    <form id="missions">
+                        <div id="missionlist">
+
+                        </div>
+
+                        <script>
+                            languageInit()
+                        </script>
+                        <script src="assets/missions.js"></script>
+                    </form>
+
+
+
+                    <div class="only-print" style="width:100%; background-color:grey; color: white; text-align: center;">
+                        <i id="pointsTxt2">Points</i><i> </i><i id="allpoints2"> 0</i>
+                    </div>
+
+                    <div class="no-print" data-hide-during-focus="" data-tap-toggle="false" data-role="footer" style="position:fixed;bottom:0;width:100%;text-align:center; font-size: 50%; background-color:grey; color: white;z-index:100;" data-theme="a" data-position="fixed">
+                        <h1 style="font-size:250%; padding-left: 10px;padding-top:5; padding-bottom:0"><b id="pointsTxt">Points:</b><i>: </b><i id="allpoints">
+                                0</i> &emsp; &emsp; <input class="btn btn-danger" id="resetTxt" type="button" value="Reset" class="ui-mini no-print" onclick="document.getElementById('missions').reset();loadsave(blanksave);check_missions();">
+
+
+
+                        </h1>
+                        <script>
+                            if (detectIOS()) {
+                                document.write("<br>")
+                            }
+                        </script>
+
+
+
+                    </div>
+                    <div style="max-width:500px;margin:5px;">
+                        <iframe style="display: none;" id="saveframe"></iframe>
+                        <form action="" id="serverForm" method="post">
+                            <input type="hidden" id="roundNo" name="roundNo">
+                            <input type="hidden" id="teamNo" name="teamNo">
+                            <input type="hidden" id="store" name="store">
+                            <input type="hidden" id="bkp" name="bkp">
+                            <input type="hidden" id="fname" name="fname">
+                            <input type="hidden" id="gppts" name="gppts">
+
+                            <!-- <h3>Referee's Notes (Shared)</h3>
+                            <textarea class="form-control" name="pubnotes"></textarea>
+
+
+                            <h3>Referee's Notes (Private)</h3>
+                            <textarea class="form-control" name="privnotes"></textarea> -->
+                            
+                           <br>
+                            <!-- <input type="checkbox" id="scoreboard" name="scoreboard" checked="checked">
+                            <label for="scoreboard"> Save to Scoreboard</label><br> -->
+                        </form>
+                        <button class="btn btn-success" onclick="savetoserver();" id="saverTscorer" type="button">Show Save Score</button>
+
+                        <!-- <textarea type="text" id="showfname" class="form-control"></textarea> -->
+                        <textarea type="text" id="showcontent" class="form-control"></textarea>
+
+                        <button  class="btn btn-success" onclick="loadsave(document.getElementById('showcontent').value.split(';')[1])">Load Save</button>
+                        <br><br><br><br><br>
+                        <input onchange="" style=" position: fixed;
+ bottom: -10000px;
+ left: -100000px;" type="file" accept=".TDRCC" id="fileInput">
+
+                        Advanced:
+                        <button data-role="none" id="importText" onclick=" document.getElementById('fileInput').click()">Load Backup Score from File</button>
+                        <br><br>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+
+            <noscript>Please enable JavaScript to continue using this application.</noscript>
+            <div style="padding-left: 10px; " class="no-print">
+
+                <!--  <text id="tournamentText">Tournament</text><br><br>-->
+
+                <text id="revisionText">Scorer </text> <text id="versionText">v3.6.0</text>
+                <!-- Scorer v3.5.0 -->
+                <br>
+                <br><text id="copyrightText">Copyright</text><br>
+                <br>
+                <text id="translatorCredit">Translated</text>
+            </div>
+            <br>
+            <br>
+            <br>
+        </div>
+        <br>
+        <script>
+            $(function() {
+                $("#footer").load("../footer.html");
+            });
+        </script>
+        <div id="footer"></div>
+</body>
+
+
+
+<script>
+    // round = getParameterByName('round');
+    // team = getParameterByName('team');
+    // tourn = getParameterByName('tourn');
+
+    function savetoserver() {
+        points = parseInt(document.getElementById('allpoints').innerHTML)
+        getvar() //var store
+        round = document.getElementById('round').value;
+        team = document.getElementById('team').value;
+        // tourn = document.getElementById('tourn').value;
+
+        document.getElementById("roundNo").value = round
+        document.getElementById("teamNo").value = team
+        document.getElementById("gppts").value = graciousProfessionalism;
+
+        // filename = team +'-'+round+'.txt'
+        savedata = points + ';' + store
+
+        document.getElementById("store").value = savedata
+
+        // document.getElementById('saveframe').src = encodeURI('/'+tourn+'/save.php?fname=' + filename+'&data='+savedata);
+        // alert('Saved Score '+points+' points')
+
+        var currentTime = new Date()
+        var day = currentTime.getDate()
+
+        // role = document.getElementById("role").value
+        name = "UNKNOWN"
+        // role = document.getElementById("role").value
+        role = "Referee"
+
+        teamSV = (team).toLocaleString('en-US', {
+            minimumIntegerDigits: 8,
+            useGrouping: false
+        })
+        score = String(getvar())
+        points = (parseInt(document.getElementById("allpoints").innerHTML)).toLocaleString('en-US', {
+            minimumIntegerDigits: 4,
+            useGrouping: false
+        })
+
+        year = (new Date()).getUTCFullYear()
+        month = ((new Date()).getUTCMonth() + 1).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+        })
+        day = ((new Date()).getUTCDate()).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+        })
+
+        hours = ((new Date()).getUTCHours()).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+        })
+        minutes = ((new Date()).getUTCMinutes()).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+        })
+        seconds = ((new Date()).getUTCSeconds()).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+        })
+
+        time = year + "-" + month + "-" + day + "_" + hours + minutes + seconds
+        person = role + "-" + name
+        match = "team-" + teamSV
+
+        filename = match + "_" + time + "_round-" + round + "_score-" + points + "_" + person + ".TDRCC"
+
+
+        data = team + ";" + round + ";" + score + ";" + role + ";" + name + ";" + filename
+        // filename = "team-"+document.getElementById("team_num").value+"_round-"+document.getElementById("round_num").value+"_score-"+document.getElementById("allpoints").innerHTML+"_"+currentTime+".TDRRP"
+        document.getElementById("fname").value = filename
+        document.getElementById("bkp").value = data
+
+        // document.getElementById("showfname").value = filename
+        document.getElementById("showcontent").value = savedata
+
+        // document.getElementById("serverForm").submit()
+    }
+
+    var fileInput = document.getElementById('fileInput');
+
+    fileInput.addEventListener('change', function(e) {
+        var file = fileInput.files[0];
+        var textType = /text.*/;
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            data = reader.result;
+            //alert(data)
+
+            loadScore(data)
+        }
+
+        reader.readAsText(file);
+
+    });
+
+
+    function loadScore(save) {
+        roundC = getParameterByName('round');
+        teamC = getParameterByName('team');
+
+        console.log(save)
+        data = save.split(";")
+        console.log(data)
+        team = data[0]
+        round = data[1]
+        load = data[2]
+        role = data[3]
+        name = data[4]
+
+        if (team != teamC || round != roundC) alert("Incorrect team or round")
+        else if (role != "Referee") {
+            if (confirm('This file does not appear to have been created by a referee; are you sure you want to load it?')) {
+                loadsave(load);
+                loadsave(load);
+                alert("Loaded from file");
+            }
+        } else {
+            loadsave(load);
+            loadsave(load);
+            alert("Loaded from file");
+        }
+        // document.getElementById("name").value = name
+        // // document.getElementById("role").value = role
+        // document.getElementById("team_num").value = team
+        // document.getElementById("round_num").value = round
+    }
+
+    function textFileToArray(filename) {
+        var reader = (window.XMLHttpRequest != null) ?
+            new XMLHttpRequest() :
+            new ActiveXObject("Microsoft.XMLHTTP");
+        reader.open("GET", filename, false);
+        reader.send();
+        return reader.responseText.split('\n'); //.split(/(\r\n|\n)/g);
+    }
+</script>
+
+
+<script>
+    (function(i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function() {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-65893558-1', 'auto');
+    ga('send', 'pageview');
+</script>
+
+<div style="display:none" class="no-mobile">
+
+    <a target="_blank" class="no-print" href="https://play.google.com/store/apps/details?id=com.ev3lessons.fllcityshaperscorer">
+        <img id="googleplay" height="100" src="assets/google-play/en_get.svg"></a><br>
+
+    <a target="_blank" class="no-print" href="https://apps.apple.com/app/fll-city-shaper-scorer/id1473760751?ls=1">
+        <img id="appstore" height="68" style="padding: 15px" src="assets/app-store/en.svg"></a>
+
+
+</div><!--
+<link rel="stylesheet" href="assets/css/colors.css" />
+-->
+<div id="styleBlank"></div>
+<script>
+    function checkDarkTheme() {
+        var ua = window.navigator.userAgent;
+        var isIE = /MSIE|Trident/.test(ua);
+
+        if (!isIE) {
+            // Android fix for enabling dark mode, see native implementation in MainActivity.java
+            if (window.navigator.userAgent.includes('AndroidDarkMode')) {
+                document.getElementById("styleBlank").innerHTML = " <style>\
+       .timer {\
+            border: 10px solid #121212;\
+            border-collapse: collapse;\
+        }\
+        .ui-radio-off {\
+            background-color: #121212 !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+        .ui-btn {\
+            background-color: #121212 !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+        .ui-btn-active {\
+            background-color: #8aac4a !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+        .ui-radio-on {\
+            background-color: #8aac4a !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+        #timerChild {\
+            border: 10px solid white !important;\
+        }\
+        #stopwatchChild {\
+            border: 10px solid white !important;\
+        }\
+        #contentload {\
+            background-color: #121212 !important;\
+            color: white;\
+            text-shadow: none;\
+        }\
+        #wholeBody {\
+            background-color: #121212 !important;\
+        }\
+        .ui-popup {\
+            background-color: #121212 !important;\
+        }\
+        Table {\
+            border: 1px solid white !important;\
+        }\
+        Text {\
+            color: white !important;\
+            fill: white !important;\
+            text-shadow: none;\
+        }\
+        .timer {\
+            border: 10px solid white !important;\
+        }\
+        .ui-page {\
+            background-color: #121212 !important;\
+        }\
+        #loadingGif {\
+            background-color: #121212 !important;\
+        }\
+        #savesTitle {\
+            background-color: #121212 !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+        #saves {\
+            background-color: #121212 !important;\
+            color: white !important;\
+            text-shadow: none !important;\
+        }\
+</style>"
+                // Apply dark theme or set theme css variables to dark
+                /*	  i = 0
+                      while (i<document.getElementsByClassName("timer").length) {
+                          document.getElementsByClassName("timer")[i].style.border = "10px solid #121212"
+                          i=i+1
+                      }
+                      i = 0
+                      while (i<document.getElementsByClassName("ui-radio-off").length) {
+                          document.getElementsByClassName("ui-radio-off")[i].style.backgroundColor = "#121212"
+                          document.getElementsByClassName("ui-radio-off")[i].style.color = "white"
+                          document.getElementsByClassName("ui-radio-off")[i].style.textShadow = "none"
+                          i=i+1
+                      }
+                      i = 0
+                      while (i<document.getElementsByClassName("ui-btn").length) {
+                          document.getElementsByClassName("ui-btn")[i].style.backgroundColor = "#121212"
+                          document.getElementsByClassName("ui-btn")[i].style.color = "white"
+                          document.getElementsByClassName("ui-btn")[i].style.textShadow = "none"
+                          i=i+1
+                      }
+                      i = 0
+                      while (i<document.getElementsByClassName("ui-btn-active").length) {
+                          document.getElementsByClassName("ui-btn-active")[i].style.backgroundColor = "#8aac4a"
+                          document.getElementsByClassName("ui-btn-active")[i].style.color = "white"
+                          document.getElementsByClassName("ui-btn-active")[i].style.textShadow = "none"
+                          i=i+1
+                      }
+                      i = 0
+                      while (i<document.getElementsByClassName("ui-radio-on").length) {
+                          document.getElementsByClassName("ui-radio-on")[i].style.backgroundColor = "#8aac4a"
+                          document.getElementsByClassName("ui-radio-on")[i].style.color = "white"
+                          document.getElementsByClassName("ui-radio-on")[i].style.textShadow = "none"
+                          i=i+1
+                      }  
+
+                      document.getElementById("timerChild").style.border = "10px solid white !important"
+                      document.getElementById("stopwatchChild").style.border = "10px solid white !important"
+                      document.getElementById("contentload").style.backgroundColor = "#121212"
+                      document.getElementById("contentload").style.color = "white"
+                      document.getElementById("contentload").style.textShadow = "none"
+                      document.getElementById("wholeBody").style.backgroundColor = "#121212"
+                      i = 0
+                      while (i<document.getElementsByClassName("ui-popup").length) {
+                          document.getElementsByClassName("ui-popup")[i].style.backgroundColor = "#8aac4a"
+                          i=i+1
+                      }
+                      */
+                return true;
+            } else {
+                document.getElementById("styleBlank").innerHTML = ""
+                return false
+            }
+        }
+    }
+</script>
+<script>
+    loaded = 0
+
+    function initpage() {
+
+        // if (window.localStorage.DRRPGoogleSheet != undefined) {
+        //     document.getElementById('sheetId').value = window.localStorage.DRRPGoogleSheet;
+        //     } else {
+        // 	document.getElementById('sheetId').value = undefinedText;
+        //     }
+
+
+        if (language == 'he' || language == 'ar') {
+            document.getElementById("wholeBody").style.textAlign = "right"
+        } else {
+            document.getElementById("wholeBody").style.textAlign = "left"
+
+        }
+
+        countrycode = language.split('-')[0]
+        if (language == 'he') {
+            countrycode = "iw"
+        }
+
+        // document.getElementById("appstore").src = "assets/app-store/" + language + ".svg"
+        // document.getElementById("googleplay").src = "assets/google-play/" + countrycode + "_get.svg"
+
+//        document.getElementById('title').innerHTML = title
+        document.getElementById('resetTxt').value = resetText
+        // $('#resetTxt').button('refresh');
+
+        document.getElementById('pointsTxt').innerHTML = pointsText
+        document.getElementById('pointsTxt2').innerHTML = pointsText + ": "
+
+
+
+        // document.getElementById('saveGoogleBtn').innerHTML = savescoreText
+        // document.getElementById('loadTextGoogle').innerHTML = loadsaveText
+
+
+
+
+        // document.getElementById('signin-Google').innerHTML = signin
+        // document.getElementById('signout-Google').innerHTML = signout
+        // document.getElementById('GoogleCreate').innerHTML = GoogleCreate
+        // document.getElementById('GoogleOpen').innerHTML = GoogleOpen
+        // document.getElementById('googleText').innerHTML = googleSaveText
+        // document.getElementById('localText').innerHTML = localSaveText
+
+        // document.getElementById('isIE').innerHTML = isIE
+        // document.getElementById('googleIntro').innerHTML = googleIntro
+        // document.getElementById('pastSaves').innerHTML = pastSaves
+        // document.getElementById('instructions').innerHTML = instructions
+        // document.getElementById('instructionsA').innerHTML = instructionsA
+        // document.getElementById('instructionsB').innerHTML = instructionsB
+        // document.getElementById('instructionsC').innerHTML = instructionsC
+        // document.getElementById('instructionsD').innerHTML = instructionsD
+        // document.getElementById('instructionsE').innerHTML = instructionsE
+        // document.getElementById('instructionsF').innerHTML = instructionsF
+        // document.getElementById('instructionsG').innerHTML = instructionsG
+
+        // document.getElementById('teamText').innerHTML = teamText
+        // document.getElementById('roundText').innerHTML = roundText
+
+
+
+        document.getElementById('revisionText').innerHTML = revisionText
+        document.getElementById('copyrightText').innerHTML = copyrightText
+
+        // document.getElementById('systemText').innerHTML = systemText
+
+        // document.getElementById('idText').innerHTML = idText
+
+        document.getElementById('versionText').innerHTML = versionText
+
+        //	document.getElementById('tournamentText').innerHTML = tournamentText
+
+        // if (translatorCredit != "") {
+        document.getElementById('translatorCredit').innerHTML = translatorCredit
+        // } else {
+        //     document.getElementById('translatorCredit').className = "no-mobile"
+        //     document.getElementById('translatorCredit').innerHTML = ""
+        // }
+
+        //   if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) {
+        // document.getElementById('notIE').style.display = 'none'
+        //   } else {
+        // document.getElementById('isIE').style.display = 'none'
+        //   }
+
+
+
+
+
+        // blanksave = getvar()
+        checkDarkTheme()
+        if (loaded == 0) {
+            setTimeout(() => {
+                loadsave(blanksave)
+                try {
+                tournamentload()
+
+                
+            } catch {}
+
+        document.getElementById('contentload').style.display = 'block'
+        document.getElementById('loadingGif').style.display = 'none'
+
+            }, "1000");
+            // loadsave(blanksave)
+
+            loaded = 1
+            switchLanguage();
+        }
+
+
+
+
+
+    }
+
+    function textNodesUnder(el) {
+        var n, a = [],
+            walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+        while (n = walk.nextNode()) a.push(n);
+        return a;
+    }
+
+
+
+    pgStart = 0
+
+    function switchLanguage() {
+        // document.getElementById('contentload').style.display = 'none'
+        // document.getElementById('loadingGif').style.display = 'inline'
+        languageInit()
+        dictionary = getDict(language);
+
+        if (pgStart == 0) {
+            nodes = textNodesUnder(document.getElementById("wholeBody"));
+            for (i = 0; i < nodes.length; i++) {
+                node = nodes[i];
+                nodes[i].en = nodes[i].data;
+            }
+            pgStart = 1;
+        }
+
+        for (i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+            if (nodes[i].en.trim() != "") nodes[i].data = nodes[i].data.replace(nodes[i].data.trim(), getTranslation(dictionary, nodes[i].en.trim()));
+        }
+
+
+        initpage()
+
+
+
+        // showPastDraws()
+
+        var variables = ""
+        for (var name in this) {
+            //     if (name[0] == "M" && name != "API_KEY") {
+            //         variables += name + "\n";
+            //         console.log(name)
+            //         document.getElementById(name).innerHTML = window[name]
+            //     }
+
+            //     if (name.indexOf("yesText") != -1) {
+            //         variables += name + "\n";
+            //         console.log(name)
+            //         document.getElementById(name).innerHTML = yes
+            //     }
+
+            //     if (name.indexOf("noText") != -1) {
+            //         variables += name + "\n";
+            //         console.log(name)
+            //         document.getElementById(name).innerHTML = no
+            //     }
+
+            //     if (name.indexOf("partlyText") != -1) {
+            //         variables += name + "\n";
+            //         console.log(name)
+            //         document.getElementById(name).innerHTML = partly
+            //     }
+
+            //     if (name.indexOf("completelyText") != -1) {
+            //         variables += name + "\n";
+            //         console.log(name)
+            //         document.getElementById(name).innerHTML = completely
+            //     }
+
+            if (name.indexOf("mNum") != -1) {
+                variables += name + "\n";
+                console.log(name)
+                document.getElementById(name).innerHTML = missionNumbering
+            }
+
+        }
+
+        i = 0
+        while (i < document.getElementsByTagName("select").length) {
+            // var myselect = $("select#" + document.getElementsByTagName("select")[i].id);
+            // myselect[0].selectedIndex = myselect[0].selectedIndex;
+            // myselect.selectmenu("refresh");
+            i = i + 1
+        }
+
+    }
+
+
+
+
+    // Query for the toggle that is used to change between themes
+
+    // Listen for the toggle check/uncheck to toggle the dark class on the <body>
+
+    // Listen for changes to the prefers-color-scheme media query
+
+
+
+    // Called by the media query to check/uncheck the toggle
+</script>
+
+</html>

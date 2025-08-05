@@ -1,0 +1,14 @@
+{
+    "name": "FLL RePlay Scorer",
+    "short_name": "RePlay Scorer",
+    "description": "2020 FLL Scorer",
+    "icons": [{
+        "src": "assets/images/replay.jpg",
+        "sizes": "545x545",
+        "type": "image/png"
+    }],
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "theme_color": "#B12A34",
+    "background_color": "#B12A34"
+}

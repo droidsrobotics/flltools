@@ -12,7 +12,7 @@
         </ion-menu-toggle>
       </ion-buttons>
       <!-- </ion-buttons> -->
-      <ion-title>FLL SUBMERGED Strategy Planner</ion-title>
+      <ion-title>FLL UNEARTHED Strategy Planner</ion-title>
     </ion-toolbar>
     <!-- <ion-toolbar color=""> -->
     <!-- <ion-segment scrollable>
@@ -86,6 +86,9 @@
                 <a style="display:none" download="myPlan.png" target="_blank" href="" id="downloadPic">Download to
                   myImage.jpg</a>
 
+                  <img src="assets/images/head.jpg" style="display: none;width: 100%;  height:auto;" id="srcmat">
+
+
                 <div class="content-box">
                   <!-- jQuery UI -->
                   <script type="text/javascript" src="assets/./lib/jquery.ui.core.1.10.3.min.js"></script>
@@ -117,38 +120,38 @@
 
 
                   <ion-button disabled data-inline="true" class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','yellow');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','yellow');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','yellow');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'yellow'"
                     style=" --background: yellow!important; 
                                                      background-size: contain; width: 50.39px; height: 36px;  background-position: center;
                                                      background-repeat: no-repeat;"> </ion-button>
 
                   <ion-button data-inline="true" class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','green');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','green');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','green');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'green'"
                     style=" --background: green!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                     background-repeat: no-repeat;"> </ion-button>
 
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','red');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','red');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','red');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'red'"
                     style=" --background: red!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                  background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','blue');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','blue');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','blue');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'blue'"
                     style=" --background: blue!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                   background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','orange');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','orange');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','orange');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'orange'"
                     style=" --background: orange!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                               background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','brown');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','brown');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','brown');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'brown'"
                     style=" --background: brown!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                    background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','black');$('#wPaint').wPaint('setLineWidth',3); toolDraw"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','black');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','black');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'black'; toolDraw"
                     style=" --background: black!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                    background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button toolDraw dpTool"
-                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','white');$('#wPaint').wPaint('setLineWidth',3);"
+                    onclick="changecolor(this);$('#wPaint').wPaint('setStrokeStyle','white');$('#wPaint').wPaint('setLineWidth',3);$('#wPaint').wPaint('setFillStyle','white');document.getElementById('wPaint-canvas').getContext('2d').fillStyle = 'white'"
                     style=" --background: white!important; width: 50.39px; height: 36px;   background-size: contain;  background-position: center;
                                                    background-repeat: no-repeat;"> </ion-button>
                   <ion-button class="ion-button dpTool" onclick="$('#wPaint').wPaint('clear');">
@@ -180,7 +183,7 @@
                     <ion-icon name="square-outline"></ion-icon>
                   </ion-button>
                   <ion-button class="ion-button toolEdit dpTool"
-                    onclick="drawmode='text';changeedit(this);$('#wPaint').wPaint('setMode','text'); $('#wPaint').wPaint('setFontSize','25');$('#wPaint').wPaint('setFillStyle','red');">
+                    onclick="drawmode='text';changeedit(this);$('#wPaint').wPaint('setMode','text'); $('#wPaint').wPaint('setFontSize','25');">
                     <ion-icon name="text-outline"></ion-icon>
                   </ion-button>
                   <ion-button class="ion-button dpTool" onclick="presentModal();
@@ -211,6 +214,7 @@
                             <td>
                               
                     -->
+                       
                 <a style="display:none;" id="saveMenu" href="#popupMap" data-rel="popup" data-position-to="window"
                   data-role="ion-button" data-theme="a" data-inline="true" aria-haspopup="true" aria-owns="popupMap"
                   aria-expanded="false" class="ui-link ui-btn ui-btn-a ui-btn-inline ui-shadow ui-corner-all ui-mini"
@@ -256,6 +260,7 @@
                 content.addEventListener('ionScroll', (ev) => console.log('scroll', ev.detail));
                 content.addEventListener('ionScrollEnd', () => console.log('scroll end'));
               </script>
+              
 
             </div>
 
