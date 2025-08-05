@@ -44,7 +44,8 @@ function specialCasesRecalc(mission) {
 
 //    blanksave = "m00a|0,m01a|0,m01b|0,m01c|0,m02a|0,m02b|0,m03a|0,m03b|0,m04a|0,m04b|0,m05a|0,m06a|0,m07a|0,m08a|0,m09a|0,m09b|0,m10a|0,m10b|0,m11a|0,m11b|0,m12a|0,m13a|0,m14a|0,m14b|0,m14c|0,m14d|0,m14e|0,m15a|0,m15b|0,m15c|0,m15d|0,precision1|0,graciousProfessionalism|0"
 function load2021() {
-   blanksave = "m00a|0,m01a|0,m01b|0,m02a|0,m03a|0,m03b|0,m04a|0,m04b|0,m05a|0,m06a|0,m07a|0,m08a|0,m09a|0,m09b|0,m10a|0,m10b|0,m11a|0,m11b|0,m12a|0,m12b|0,m14a|0,m14a|0,m14b|0,m14c|0,m14d|0,m14e|0,m14f|0,m14g|0,m15a|0,precision1|0,graciousProfessionalism|0" ;
+   blanksave = "m00a|0,m01a|0,m01b|0,m02a|0,m03a|0,m03b|0,m04a|0,m04b|0,m05a|0,m06a|0,m07a|0,m08a|0,m09a|0,m09b|0,m10a|0,m10b|0,m11a|0,m11b|0,m12a|0,m12b|0,m14a|0,m14a|0,m15a|0,precision1|0,graciousProfessionalism|0" ;
+//    blanksave = "m00a|0,m01a|0,m01b|0,m02a|0,m03a|0,m03b|0,m04a|0,m04b|0,m05a|0,m06a|0,m07a|0,m08a|0,m09a|0,m09b|0,m10a|0,m10b|0,m11a|0,m11b|0,m12a|0,m12b|0,m14a|0,m14a|0,m14b|0,m14c|0,m14d|0,m14e|0,m14f|0,m14g|0,m15a|0,precision1|0,graciousProfessionalism|0" ;
 
     clearbuffer();
 
@@ -58,7 +59,7 @@ function load2021() {
     endtable()
 
     starttable('M02', "MAP REVEAL", 'M02.png', ['m02a'], 0)
-    createrange("m02a", 10, 0, 2, 0, "Topsoil sections completely cleared", '')
+    createrange("m02a", 10, 0, 3, 0, "Topsoil sections completely cleared", '')
     endtable()
 
     starttable('M03', "MINESHAFT EXPLORER", 'M03.png', ['m03a', 'm03b'], 1)
@@ -128,14 +129,16 @@ function load2021() {
     createbutton("m13a", 30, "Statue is completely raised")
     endtable()
 
-    starttable('M14', "FORUM", 'M14.png', ['m14a','m14b','m14c','m14d','m14e','m14f','m14g'], 1)
-    createbutton("m14a", 5, "Brush artifact touching the mat and at least partly in the forum")
-    createbutton("m14b", 5, "Topsoil artifact touching the mat and at least partly in the forum")
-    createbutton("m14c", 5, "Precious Artifact touching the mat and at least partly in the forum")
-    createbutton("m14d", 5, "Opposing Team’s Minecart artifact touching the mat and at least partly in the forum")
-    createbutton("m14e", 5, "Ore with Fossilized artifact touching the mat and at least partly in the forum")
-    createbutton("m14f", 5, "Millstone artifact touching the mat and at least partly in the forum")
-    createbutton("m14g", 5, "Scale Pan artifact touching the mat and at least partly in the forum")
+    starttable('M14', "FORUM", 'M14.png', ['m14a'], 1) //,'m14b','m14c','m14d','m14e','m14f','m14g'
+    createrange("m14a", 5, 0, 7, 0, "Artifacts touching the mat and at least partly in the forum (Artifacts: Brush, Topsoil, Precious Artifact, Opposing Team’s Minecart, Ore with Fossilized Artifact, Millstone, & Scale Pan)", '')
+
+    // createbutton("m14a", 5, "Brush artifact touching the mat and at least partly in the forum")
+    // createbutton("m14b", 5, "Topsoil artifact touching the mat and at least partly in the forum")
+    // createbutton("m14c", 5, "Precious Artifact touching the mat and at least partly in the forum")
+    // createbutton("m14d", 5, "Opposing Team’s Minecart artifact touching the mat and at least partly in the forum")
+    // createbutton("m14e", 5, "Ore with Fossilized artifact touching the mat and at least partly in the forum")
+    // createbutton("m14f", 5, "Millstone artifact touching the mat and at least partly in the forum")
+    // createbutton("m14g", 5, "Scale Pan artifact touching the mat and at least partly in the forum")
 
 
     starttable('M15', "SITE MARKING", 'M15.png', ['m15a'], 1)
@@ -162,5 +165,5 @@ load2021()
 try {
     document.getElementById("title").innerHTML = "FLL UNEARTHED Scorer"
 } catch (error)  {
-
+    
 }
