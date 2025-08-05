@@ -13,7 +13,7 @@ versionYear = 2025
 versionText = ""
 
 //langs=['en:United States:English','pt:Brazil:Portugues','de:Germany:Deutsche','es:Spain:Español','sk:Slovakia:Slovenský','nl:Netherlands:Nederlands','el:Greece:ελληνικά','hu:Hungary:Magyar','he:Israel:עִבְרִית‎','fr:France:français']
-langs = ['en:United States:English:English','fr:France:Français:French','es:Spain:Español:Spanish']
+langs = ['en:United States:English:English','fr:France:Français:French']//,'es:Spain:Español:Spanish']
 // ,'fr:France:Français:French','he:Israel:עִבְרִית‎:Hebrew','nl:Netherlands:Nederlands:Dutch','pt:Brazil:Portugues:Portuguese']
 // , 'es:Spain:Español'
 // ,'el:Greece:Ελληνικά','pt:Brazil:Portugues','nl:Netherlands:Nederlands','th:Thailand:ไทย','ro:Romania:Română','he:Israel:עִבְרִית‎',"sl:Slovenia:slovenščino"

@@ -14,7 +14,7 @@ versionText = ""
 
 //langs=['en:United States:English','pt:Brazil:Portugues','de:Germany:Deutsche','es:Spain:EspaÃ±ol','sk:Slovakia:SlovenskÃ½','nl:Netherlands:Nederlands','el:Greece:ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬','hu:Hungary:Magyar','he:Israel:×¢Ö´×‘Ö°×¨Ö´×™×ªâ€Ž','fr:France:franÃ§ais']
 // langs = ['en:United States:English:English']
-langs = ['en:United States:English:English', 'fr:France:FranÃ§ais:French', 'es:Spain:EspaÃ±ol:Spanish']
+langs = ['en:United States:English:English', 'fr:France:FranÃ§ais:French']//, 'es:Spain:EspaÃ±ol:Spanish']
 
 // , 'es:Spain:EspaÃ±ol'
 // ,'el:Greece:Î•Î»Î»Î·Î½Î¹ÎºÎ¬','pt:Brazil:Portugues','nl:Netherlands:Nederlands','th:Thailand:à¹„à¸—à¸¢','ro:Romania:RomÃ¢nÄƒ','he:Israel:×¢Ö´×‘Ö°×¨Ö´×™×ªâ€Ž',"sl:Slovenia:slovenÅ¡Äino"

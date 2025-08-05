@@ -56,6 +56,7 @@ function load2021() {
     starttable('M01', "SURFACE BRUSHING", 'M01.png', ['m01a', 'm01b'], 1)
     createrange("m01a", 10, 0, 2, 0, "Soil deposits are completely cleared, touching the mat", '')
     createbutton("m01b", 10, "Archaeologist’s brush is not touching the dig site")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
     starttable('M02', "MAP REVEAL", 'M02.png', ['m02a'], 0)
@@ -71,15 +72,18 @@ function load2021() {
 
 
 
-    starttable('M04', "CAREFUL RECOVERY", 'M04.png', ['m04a', 'm04b'], 0)
+    starttable('M04', "CAREFUL RECOVERY", 'M04.png', ['m04a', 'm04b'], 1)
     createbutton("m04a", 30, "Precious artifact is not touching the mine")
     createbutton("m04b", 10, "Both support structures are standing.")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
+
     endtable()
 
 
 
-    starttable('M05', "WHO LIVED HERE?", 'M05.png', ['m05a'], 0)
+    starttable('M05', "WHO LIVED HERE?", 'M05.png', ['m05a'], 1)
     createbutton("m05a", 30, "Structure floor is completely upright")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
     starttable('M06', "FORGE", 'M06.png', ['m06a'], 1)
@@ -98,9 +102,10 @@ function load2021() {
     createrange("m08a", 10, 0, 3, 0, "Preserved pieces are outside the silo", '')
     endtable()
 
-    starttable('M09', "WHAT'S ON SALE?", 'M09.png', ['m09a', 'm09b'], 0)
+    starttable('M09', "WHAT'S ON SALE?", 'M09.png', ['m09a', 'm09b'], 1)
     createbutton("m09a", 20, "Roof is completely raised")
     createbutton("m09b", 10, "Market wares are raised")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
 
@@ -114,23 +119,28 @@ function load2021() {
 
 
 
-    starttable('M11', "ANGLER ARTIFACTS", 'M11.png', ['m11a', 'm11b'], 0)
+    starttable('M11', "ANGLER ARTIFACTS", 'M11.png', ['m11a', 'm11b'], 1)
     createbutton("m11a", 20, "Artifacts are raised above the ground layer")
     createbutton("m11b", 10, "BONUS: The crane flag is at least partly lowered")
     createbuttonenables("m11a", "m11b")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
-    starttable('M12', "SALVAGE OPERATION", 'M12.png', ['m12a', 'm12b'], 0)
+    starttable('M12', "SALVAGE OPERATION", 'M12.png', ['m12a', 'm12b'], 1)
     createbutton("m12a", 20, "Sand is completely cleared")
     createbutton("m12b", 10, "Ship is completely raised")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
-    starttable('M13', "STATUE REBUILD", 'M13.png', ['m14a'], 0)
+    starttable('M13', "STATUE REBUILD", 'M13.png', ['m13a'], 1)
     createbutton("m13a", 30, "Statue is completely raised")
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
     endtable()
 
     starttable('M14', "FORUM", 'M14.png', ['m14a'], 1) //,'m14b','m14c','m14d','m14e','m14f','m14g'
     createrange("m14a", 5, 0, 7, 0, "Artifacts touching the mat and at least partly in the forum (Artifacts: Brush, Topsoil, Precious Artifact, Opposing Team’s Minecart, Ore with Fossilized Artifact, Millstone, & Scale Pan)", '')
+    createcomment("A mission model cannot earn points if it is touching equipment at the end of the match.")
+    endtable()
 
     // createbutton("m14a", 5, "Brush artifact touching the mat and at least partly in the forum")
     // createbutton("m14b", 5, "Topsoil artifact touching the mat and at least partly in the forum")
