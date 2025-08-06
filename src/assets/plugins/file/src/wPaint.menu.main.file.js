@@ -1,5 +1,5 @@
 (function ($) {
-  var img = 'plugins/file/img/icons-menu-main-file.png';
+  var img = 'assets/plugins/file/img/icons-menu-main-file.png';
 
   // extend menu
   $.extend(true, $.fn.wPaint.menus.main.items, {
