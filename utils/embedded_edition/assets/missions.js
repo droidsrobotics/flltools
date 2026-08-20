@@ -173,7 +173,7 @@ function load2021() {
 load2021()
 
 try {
-    document.getElementById("title").innerHTML = "FLL UNEARTHED Scorer"
+    document.getElementById("title").innerHTML = "FLL BIOGLOW FOUNDERS Scorer"
 } catch (error)  {
     
 }

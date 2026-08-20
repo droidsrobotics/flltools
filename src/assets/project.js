@@ -85,11 +85,11 @@ function load2020RP() {
 
 
 	startRow()
-	addSubSection("Iterate - Teams shared their ideas, collected feedback, and included improvements in their solution.","#D2DAF1",["iterate","iterate2"])
+	addSubSection("Iterate - Teams shared their ideas with others, collected feedback, and included improvements in their solution.","#D2DAF1",["iterate","iterate2"])
 	closeRow()
 
 	startRow()
-	addOption("iterate","Minimal sharing of their solution","1")
+	addOption("iterate","Minimal sharing of their solution  with others","1")
 	addOption("iterate","Solution shared with at least one person/group","2")
 	addOption("iterate","Solution shared with multiple people/groups","3")
 	addFreeOption("iterate","4")
